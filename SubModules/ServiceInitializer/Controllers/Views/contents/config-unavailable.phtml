@@ -1,0 +1,24 @@
+<?php
+declare(strict_types=1);
+
+if (!isset($this, $kernel, $translator)) {
+    return;
+}
+
+use ArrayAccess\TrayDigita\Kernel\Interfaces\KernelInterface;
+use ArrayAccess\TrayDigita\L10n\Translations\Interfaces\TranslatorInterface;
+use ArrayAccess\TrayDigita\View\Engines\AbstractEngine;
+
+// phpcs:disable Generic.Files.LineLength.TooLong
+/**
+ * @var AbstractEngine $this
+ * @var array $parameters
+ * @var KernelInterface $kernel
+ * @var TranslatorInterface $translator
+ */
+?>
+<div class="container">
+    <section id="install">
+        <h1 class="hero-title"><?= $translator->translate('Installation');?></h1>
+    </section>
+</div>

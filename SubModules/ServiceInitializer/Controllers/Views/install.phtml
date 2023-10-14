@@ -1,0 +1,50 @@
+<?php
+declare(strict_types=1);
+
+/**
+ * @var AbstractEngine $this
+ * @var array $parameters
+ */
+if (!isset($this)) {
+    return;
+}
+
+use ArrayAccess\TrayDigita\Kernel\Interfaces\KernelInterface;
+use ArrayAccess\TrayDigita\L10n\Translations\Interfaces\TranslatorInterface;
+use ArrayAccess\TrayDigita\Util\Filter\ContainerHelper;
+use ArrayAccess\TrayDigita\View\Engines\AbstractEngine;
+
+// phpcs:disable Generic.Files.LineLength.TooLong
+$translator = ContainerHelper::service(TranslatorInterface::class, $this->getView()->getContainer());
+$kernel = ContainerHelper::service(KernelInterface::class, $this->getView()->getContainer());
+?>
+<!DOCTYPE html>
+<html class="no-js" lang="<?= htmlspecialchars($parameters['language']??'en');?>">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?= htmlentities($translator->translate('Installation'));?></title>
+    <link rel="stylesheet" href="<?= $this->getView()->getBaseURI('assets@install/css/install.css?v=1.0.0');?>" media="all">
+    <script src="<?= $this->getView()->getBaseURI('assets@install/js/install.js?v=1.0.0');?>"></script>
+</head>
+<body>
+<div id="page" class="page-wrapper">
+    <?php
+    switch ($kernel->getConfigError()) {
+        case KernelInterface::CONFIG_UNAVAILABLE:
+            require __DIR__ . '/contents/config-unavailable.phtml';
+            break;
+        case KernelInterface::CONFIG_EMPTY_FILE:
+            require __DIR__ . '/contents/config-empty-file.phtml';
+            break;
+        case KernelInterface::CONFIG_NOT_FILE:
+            require __DIR__ . '/contents/config-not-file.phtml';
+            break;
+        case KernelInterface::CONFIG_NOT_ITERABLE:
+            require __DIR__ . '/contents/config-not-iterable.phtml';
+            break;
+    }
+    ?>
+</div>
+</body>
+</html>
