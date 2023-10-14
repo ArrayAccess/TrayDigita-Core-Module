@@ -100,7 +100,7 @@ final class Assets extends CoreSubmoduleAbstract
                 $attributes = $list;
                 $script->registerURL(
                     $name,
-                    (string)$url,
+                    $url,
                     $attributes,
                     ...array_filter($inherits, 'is_string')
                 );
@@ -160,12 +160,6 @@ final class Assets extends CoreSubmoduleAbstract
     }
 
     const CSS = [
-        // https://necolas.github.io/normalize.css/
-        'normalize' => [
-            'url' => '/assets/core/css/normalize.css',
-            'version' => '8.0.1',
-            'inherits' => [],
-        ],
         // https://grapesjs.com/
         "grapesjs" => [
             'url'  => 'https://cdnjs.cloudflare.com/ajax/libs/grapesjs/0.12.17/css/grapes.min.css',
@@ -206,7 +200,7 @@ final class Assets extends CoreSubmoduleAbstract
     const JS = [
         // http://jquery.com/
         'jquery' => [
-            'url' => '/assets/core/js/jquery.min.js',
+            'url' => 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js',
             'version' => '3.7.1',
             'inherits' => [],
         ],
@@ -240,22 +234,17 @@ final class Assets extends CoreSubmoduleAbstract
             'version' => '3.17.1',
             'inherits' => [],
         ],
-        'events' => [
-            'url' => '/assets/core/js/events.min.js',
-            'version' => '1.0.0',
-            'inherits' => [],
-        ],
-        'upload-chunk' => [
-            'url' => '/assets/core/js/upload-chunk.min.js',
-            'version' => '1.0.0',
-            'inherits' => [],
-        ],
     ];
 
     const PACKAGE = [
         'grapesjs' => [
             'css' => [
                 'grapesjs' => []
+            ],
+        ],
+        'uikit' => [
+            'css' => [
+                'uikit' => []
             ],
         ],
         'cropper' => [
@@ -271,11 +260,6 @@ final class Assets extends CoreSubmoduleAbstract
         'codemirror' => [
             'css' => [
                 'codemirror' => []
-            ],
-        ],
-        'uikit' => [
-            'css' => [
-                'uikit' => []
             ],
         ],
     ];

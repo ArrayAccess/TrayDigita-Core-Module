@@ -106,7 +106,6 @@ final class Core extends AbstractModule
         }
 
         $this->didInit = true;
-
         $this->doRegisterEntities();
 
         $manager = $this->getManager();
@@ -138,6 +137,7 @@ final class Core extends AbstractModule
             $this->{'priorityRecords'}[$name] = $priority;
             $this->{'modules'}[$name] = $module;
         });
+
         // @dispatch(coreModule.beforeRegisterModules)
         $manager->dispatch('coreModule.beforeRegisterModules', $this);
         try {
@@ -228,15 +228,16 @@ final class Core extends AbstractModule
         try {
             foreach ($this->priorities as $module => $p) {
                 // @detach(coreModule.beforeInitModules)
-                $manager->dispatch('coreModule.beforeInitModule', $this, $module, $p);
+                $manager->dispatch('coreModule.beforeInitModule', $this, $this->subModules[$module], $p);
                 try {
                     $this->subModules[$module]->init();
                     // @detach(coreModule.initModule)
-                    $manager->dispatch('coreModule.initModule', $this, $module, $p);
+                    $manager->dispatch('coreModule.initModule', $this, $this->subModules[$module], $p);
                 } finally {
                     // @detach(coreModule.afterInitModule)
-                    $manager->dispatch('coreModule.afterInitModule', $this, $module, $p);
+                    $manager->dispatch('coreModule.afterInitModule', $this, $this->subModules[$module], $p);
                 }
+                unset($this->subModules[$module]);
             }
             // @detach(coreModule.afterInitModules)
             $manager->dispatch('coreModule.initModules', $this);
