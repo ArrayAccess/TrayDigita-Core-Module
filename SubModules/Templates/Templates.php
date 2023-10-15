@@ -5,8 +5,8 @@ namespace ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Templates;
 
 use ArrayAccess\TrayDigita\App\Modules\Core\Abstracts\CoreSubmoduleAbstract;
 use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Option\Option;
-use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Templates\Middlewares\TemplateLoaderMiddleware;
 use ArrayAccess\TrayDigita\Kernel\Interfaces\KernelInterface;
+use ArrayAccess\TrayDigita\Templates\Middlewares\TemplateLoaderMiddleware;
 use ArrayAccess\TrayDigita\Templates\Wrapper;
 use ArrayAccess\TrayDigita\Util\Filter\ContainerHelper;
 use ArrayAccess\TrayDigita\View\Interfaces\ViewInterface;
@@ -66,7 +66,7 @@ final class Templates extends CoreSubmoduleAbstract
         }
         $this->templateRule = new TemplateRule($wrapper);
         $this->templateRule->initialize();
-        $view?->setTemplateRule($this->templateRule);
+        $view->setTemplateRule($this->templateRule);
 
         $option = $this->getModules()->get(Option::class);
         $active = $option?->get(self::ACTIVE_TEMPLATE_KEY)?->getValue();
@@ -81,15 +81,14 @@ final class Templates extends CoreSubmoduleAbstract
             $view->setViewsDirectory([]);
         }
 
-        // add middleware to load templates.php
-        try {
-            $kernel->getHttpKernel()->addMiddleware(
-                ContainerHelper::resolveCallable(
-                    TemplateLoaderMiddleware::class,
-                    $this->getContainer()
-                )
-            );
-        } catch (Throwable $e) {
-        }
+        /**
+         * add middleware to load templates.php
+         * @see TemplateLoaderMiddleware::doProcess()
+         */
+        $kernel->getHttpKernel()->addMiddleware(
+            new TemplateLoaderMiddleware(
+                $view->getContainer()??$this->getContainer()
+            )
+        );
     }
 }
