@@ -6,7 +6,6 @@ namespace ArrayAccess\TrayDigita\App\Modules\Core\SubModules\ServiceInitializer;
 use ArrayAccess\TrayDigita\App\Modules\Core\Abstracts\CoreSubmoduleAbstract;
 use ArrayAccess\TrayDigita\App\Modules\Core\Entities\CacheItem;
 use ArrayAccess\TrayDigita\App\Modules\Core\Entities\LogItem;
-use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\ServiceInitializer\Middlewares\DebuggingMiddleware;
 use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\ServiceInitializer\Middlewares\ErrorMiddleware;
 use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\ServiceInitializer\Middlewares\InitMiddleware;
 use ArrayAccess\TrayDigita\Collection\Config;
@@ -16,6 +15,7 @@ use ArrayAccess\TrayDigita\L10n\Translations\Interfaces\TranslatorInterface;
 use ArrayAccess\TrayDigita\Util\Filter\Consolidation;
 use ArrayAccess\TrayDigita\Util\Filter\ContainerHelper;
 use Psr\Http\Server\MiddlewareInterface;
+use Throwable;
 use function is_array;
 use function is_string;
 
@@ -29,7 +29,6 @@ final class ServiceInitializer extends CoreSubmoduleAbstract
      * @var array<class-string<MiddlewareInterface>>
      */
     protected array $middlewares = [
-        DebuggingMiddleware::class,
         ErrorMiddleware::class,
         InitMiddleware::class
     ];
@@ -104,8 +103,11 @@ final class ServiceInitializer extends CoreSubmoduleAbstract
             return;
         }
         foreach ($this->middlewares as $middleware) {
-            $middleware = ContainerHelper::resolveCallable($middleware, $this->getContainer());
-            $kernel->addMiddleware($middleware);
+            try {
+                $middleware = ContainerHelper::resolveCallable($middleware, $this->getContainer());
+                $kernel->addMiddleware($middleware);
+            } catch (Throwable) {
+            }
         }
     }
 
