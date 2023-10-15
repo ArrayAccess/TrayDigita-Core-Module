@@ -29,6 +29,19 @@ class CoreModuleAggregator extends AbstractAggregator
         return $this->core;
     }
 
+    private bool $translated = false;
+
+    public function getName(): string
+    {
+        if ($this->translated) {
+            return $this->name;
+        }
+        $this->translated = true;
+        return $this->name = $this
+            ->getCore()
+            ?->translate('Event', context: 'benchmark')??$this->name;
+    }
+
     public function accepted(RecordInterface $record): bool
     {
         if ($record->getGroup()->getName() === $this->groupName) {
