@@ -10,6 +10,7 @@ use ArrayAccess\TrayDigita\Module\Interfaces\ModuleInterface;
 use ArrayAccess\TrayDigita\Module\Modules;
 use ArrayAccess\TrayDigita\Module\Traits\ModuleTrait;
 use function debug_backtrace;
+use function func_get_args;
 use function sprintf;
 use const DEBUG_BACKTRACE_IGNORE_ARGS;
 
@@ -62,5 +63,41 @@ abstract class CoreSubmoduleAbstract implements ModuleInterface
         ?string $context = null
     ): string {
         return $this->core->translatePlural(...func_get_args());
+    }
+    /**
+     * Translate context
+     *
+     * @param string $original
+     * @param string $context
+     * @param string $domain
+     * @return string
+     * @see TranslatorInterface::translateContext()
+     */
+    public function translateContext(
+        string $original,
+        string $context,
+        string $domain = TranslatorInterface::DEFAULT_DOMAIN,
+    ): string {
+        return $this->core->translateContext(...func_get_args());
+    }
+
+    /**
+     * Translate plural context
+     *
+     * @param string $singular
+     * @param string $plural
+     * @param int|float|numeric-string $number
+     * @param string $context
+     * @param string $domain
+     * @return string
+     */
+    public function translatePluralContext(
+        string $singular,
+        string $plural,
+        int|float|string $number,
+        string $context,
+        string $domain = TranslatorInterface::DEFAULT_DOMAIN
+    ) : string {
+        return $this->core->translatePluralContext(...func_get_args());
     }
 }

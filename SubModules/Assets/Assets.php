@@ -26,17 +26,19 @@ final class Assets extends CoreSubmoduleAbstract
 
     public function getName(): string
     {
-        return $this->translate(
+        return $this->translateContext(
             'Assets Helper',
-            context: 'module'
+            'core-module',
+            'module'
         );
     }
 
     public function getDescription(): string
     {
-        return $this->translate(
+        return $this->translateContext(
             'Core module that help assets rendering',
-            context: 'module'
+            'core-module',
+            'module'
         );
     }
 

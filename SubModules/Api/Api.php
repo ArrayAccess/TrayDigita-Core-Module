@@ -17,9 +17,10 @@ final class Api extends CoreSubmoduleAbstract
 
     public function getDescription(): string
     {
-        return $this->translate(
+        return $this->translateContext(
             'Core module to help api controller working properly',
-            context: 'module'
+            'module',
+            'core-module'
         );
     }
 

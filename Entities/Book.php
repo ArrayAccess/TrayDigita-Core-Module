@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace ArrayAccess\TrayDigita\App\Modules\Core\Entities;
 
+use ArrayAccess\TrayDigita\App\Modules\Users\Entities\Admin;
+use ArrayAccess\TrayDigita\App\Modules\Users\Entities\Attachment;
 use ArrayAccess\TrayDigita\Database\Entities\Abstracts\AbstractEntity;
 use ArrayAccess\TrayDigita\Database\Entities\Interfaces\AvailabilityStatusEntityInterface;
 use ArrayAccess\TrayDigita\Database\Entities\Interfaces\IdentityBasedEntityInterface;
@@ -568,6 +570,7 @@ class Book extends AbstractEntity implements IdentityBasedEntityInterface, Avail
 
     public function setReleaseYear(DateTimeInterface|int|null $release_year): void
     {
+        /** @noinspection DuplicatedCode */
         if (is_int($release_year)) {
             $release_year = (string) $release_year;
             if ($release_year < 1000) {

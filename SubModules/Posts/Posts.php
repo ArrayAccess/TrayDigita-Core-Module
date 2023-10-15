@@ -8,10 +8,14 @@ use ArrayAccess\TrayDigita\App\Modules\Core\Entities\Post;
 use ArrayAccess\TrayDigita\App\Modules\Core\Entities\PostCategory;
 use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Posts\Finder\CategoryFinder;
 use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Posts\Finder\PostFinder;
+use ArrayAccess\TrayDigita\Database\Connection;
 use ArrayAccess\TrayDigita\Database\Result\LazyResultCriteria;
 use ArrayAccess\TrayDigita\Util\Filter\ContainerHelper;
 use Doctrine\Common\Collections\Expr\Comparison;
 use Doctrine\Common\Collections\Expr\CompositeExpression;
+use Doctrine\DBAL\Exception;
+use Doctrine\DBAL\Schema\SchemaException;
+use Throwable;
 
 final class Posts extends CoreSubmoduleAbstract
 {
@@ -23,34 +27,48 @@ final class Posts extends CoreSubmoduleAbstract
 
     public function getName(): string
     {
-        return $this->translate(
+        return $this->translateContext(
             'Post & Articles',
-            context: 'module'
+            'module',
+            'core-module'
         );
     }
 
     public function getDescription(): string
     {
-        return $this->translate(
+        return $this->translateContext(
             'Core module to make application support posts publishing',
-            context: 'module'
+            'module',
+            'core-module'
         );
     }
 
     public function getPostFinder(): ?PostFinder
     {
-        return $this->postFinder ??= ContainerHelper::resolveCallable(
-            PostFinder::class,
-            $this->getContainer()
-        );
+        try {
+            return $this->postFinder ??= ContainerHelper::resolveCallable(
+                PostFinder::class,
+                $this->getContainer()
+            );
+        } catch (Throwable) {
+            return new PostFinder(
+                ContainerHelper::service(Connection::class, $this->getContainer())
+            );
+        }
     }
 
     public function getCategoryFinder(): ?CategoryFinder
     {
-        return $this->categoryFinder ??= ContainerHelper::resolveCallable(
-            CategoryFinder::class,
-            $this->getContainer()
-        );
+        try {
+            return $this->categoryFinder ??= ContainerHelper::resolveCallable(
+                CategoryFinder::class,
+                $this->getContainer()
+            );
+        } catch (Throwable) {
+            return new CategoryFinder(
+                ContainerHelper::service(Connection::class, $this->getContainer())
+            );
+        }
     }
 
     public function findPostById(int $id): ?Post
@@ -73,6 +91,11 @@ final class Posts extends CoreSubmoduleAbstract
         return $this->getCategoryFinder()->findBySlug($slug);
     }
 
+    /**
+     * @throws SchemaException
+     * @throws Exception
+     * @noinspection PhpUnused
+     */
     public function searchPost(
         string $searchQuery,
         int $limit = 10,
@@ -89,6 +112,11 @@ final class Posts extends CoreSubmoduleAbstract
         );
     }
 
+    /**
+     * @throws SchemaException
+     * @throws Exception
+     * @noinspection PhpUnused
+     */
     public function searchCategory(
         string $searchQuery,
         int $limit = 10,

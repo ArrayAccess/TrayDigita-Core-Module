@@ -11,17 +11,19 @@ final class Quiz extends CoreSubmoduleAbstract
 
     public function getName(): string
     {
-        return $this->translate(
+        return $this->translateContext(
             'Quiz',
-            context: 'module'
+            'module',
+            'core-module'
         );
     }
 
     public function getDescription(): string
     {
-        return $this->translate(
+        return $this->translateContext(
             'Core module to make application support quiz & course',
-            context: 'module'
+            'module',
+            'core-module'
         );
     }
 }

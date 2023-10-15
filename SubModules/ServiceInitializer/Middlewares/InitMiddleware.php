@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ArrayAccess\TrayDigita\App\Modules\Core\SubModules\ServiceInitializer\Middlewares;
 
 use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\ServiceInitializer\Controllers\InstallController;
+use ArrayAccess\TrayDigita\Http\Interfaces\HttpExceptionInterface;
 use ArrayAccess\TrayDigita\Kernel\Interfaces\KernelInterface;
 use ArrayAccess\TrayDigita\L10n\Translations\Interfaces\TranslatorInterface;
 use ArrayAccess\TrayDigita\Middleware\AbstractMiddleware;
@@ -20,6 +21,9 @@ class InitMiddleware extends AbstractMiddleware
 {
     protected int $priority = PHP_INT_MAX - 10000;
 
+    /**
+     * @throws HttpExceptionInterface
+     */
     protected function doProcess(ServerRequestInterface $request): ServerRequestInterface|ResponseInterface
     {
         // enhance views

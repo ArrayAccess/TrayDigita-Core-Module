@@ -35,17 +35,19 @@ final class ServiceInitializer extends CoreSubmoduleAbstract
 
     public function getName(): string
     {
-        return $this->translate(
+        return $this->translateContext(
             'Service Initializer',
-            context: 'module'
+            'module',
+            'core-module'
         );
     }
 
     public function getDescription(): string
     {
-        return $this->translate(
+        return $this->translateContext(
             'Core module to make application run properly',
-            context: 'module'
+            'module',
+            'core-module'
         );
     }
 

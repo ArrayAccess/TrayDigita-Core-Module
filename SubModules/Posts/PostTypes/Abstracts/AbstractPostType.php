@@ -6,7 +6,7 @@ namespace ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Posts\PostTypes\Abs
 use ArrayAccess\TrayDigita\App\Modules\Core\Entities\Post;
 use ArrayAccess\TrayDigita\App\Modules\Core\Entities\PostCategory;
 use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Posts\Posts;
-use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Users\Users;
+use ArrayAccess\TrayDigita\App\Modules\Users\Users;
 use ArrayAccess\TrayDigita\Auth\Roles\Interfaces\PermissionInterface;
 use ArrayAccess\TrayDigita\Auth\Roles\Interfaces\RoleInterface;
 use ArrayAccess\TrayDigita\Database\Helper\Expression;

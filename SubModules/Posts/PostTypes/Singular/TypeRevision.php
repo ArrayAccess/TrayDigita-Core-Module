@@ -13,6 +13,7 @@ class TypeRevision extends SinglePostAbstract
 
     public function getPost(): ?Post
     {
+        /** @noinspection DuplicatedCode */
         if ($this->postInit) {
             return $this->post;
         }

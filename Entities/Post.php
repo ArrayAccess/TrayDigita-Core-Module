@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace ArrayAccess\TrayDigita\App\Modules\Core\Entities;
 
+use ArrayAccess\TrayDigita\App\Modules\Users\Entities\Admin;
 use ArrayAccess\TrayDigita\Database\Entities\Abstracts\AbstractEntity;
 use ArrayAccess\TrayDigita\Database\Entities\Interfaces\AvailabilityStatusEntityInterface;
 use ArrayAccess\TrayDigita\Database\Entities\Traits\AvailabilityStatusTrait;
@@ -387,6 +388,7 @@ class Post extends AbstractEntity implements AvailabilityStatusEntityInterface
     ]
     public function preCheckSlug(PrePersistEventArgs|PreUpdateEventArgs $event): void
     {
+        /** @noinspection DuplicatedCode */
         $oldSlug = null;
         $slug = $this->getSlug();
         $isUpdate = $event instanceof PreUpdateEventArgs;

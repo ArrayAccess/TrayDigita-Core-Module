@@ -11,17 +11,19 @@ final class Controllers extends CoreSubmoduleAbstract
 
     public function getName(): string
     {
-        return $this->translate(
+        return $this->translateContext(
             'Controller Module',
-            context: 'module'
+            'module',
+            'core-module'
         );
     }
 
     public function getDescription(): string
     {
-        return $this->translate(
+        return $this->translateContext(
             'Core module to controller working properly',
-            context: 'module'
+            'module',
+            'core-module'
         );
     }
 }

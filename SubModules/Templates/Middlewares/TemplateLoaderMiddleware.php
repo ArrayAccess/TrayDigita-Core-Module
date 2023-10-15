@@ -18,6 +18,9 @@ class TemplateLoaderMiddleware extends AbstractMiddleware
 {
     protected int $priority = PHP_INT_MAX - 10000;
 
+    /**
+     * @throws Throwable
+     */
     protected function doProcess(ServerRequestInterface $request): ServerRequestInterface|ResponseInterface
     {
         // register

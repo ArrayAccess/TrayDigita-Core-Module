@@ -21,17 +21,19 @@ final class Scheduler extends CoreSubmoduleAbstract
 
     public function getName(): string
     {
-        return $this->translate(
+        return $this->translateContext(
             'Database Scheduler',
-            context: 'module'
+            'module',
+            'core-module'
         );
     }
 
     public function getDescription(): string
     {
-        return $this->translate(
+        return $this->translateContext(
             'Core module to make application support database storage record for scheduler',
-            context: 'module'
+            'module',
+            'core-module'
         );
     }
 

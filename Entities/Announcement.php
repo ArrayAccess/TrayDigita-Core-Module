@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace ArrayAccess\TrayDigita\App\Modules\Core\Entities;
 
 use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Announcement\Helper\AnnouncementTarget;
+use ArrayAccess\TrayDigita\App\Modules\Users\Entities\Admin;
 use ArrayAccess\TrayDigita\Database\Entities\Abstracts\AbstractEntity;
 use ArrayAccess\TrayDigita\Database\Entities\Interfaces\AvailabilityStatusEntityInterface;
 use ArrayAccess\TrayDigita\Database\Entities\Interfaces\IdentityBasedEntityInterface;

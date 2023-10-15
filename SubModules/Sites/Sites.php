@@ -28,17 +28,19 @@ final class Sites extends CoreSubmoduleAbstract
 
     public function getName(): string
     {
-        return $this->translate(
+        return $this->translateContext(
             'Site',
-            context: 'module'
+            'module',
+            'core-module'
         );
     }
 
     public function getDescription(): string
     {
-        return $this->translate(
+        return $this->translateContext(
             'Core module for site',
-            context: 'module'
+            'module',
+            'core-module'
         );
     }
 

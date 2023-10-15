@@ -16,17 +16,19 @@ final class Announcement extends CoreSubmoduleAbstract
 
     public function getName(): string
     {
-        return $this->translate(
+        return $this->translateContext(
             'Announcement',
-            context: 'module'
+            'module',
+            'core-module'
         );
     }
 
     public function getDescription(): string
     {
-        return $this->translate(
+        return $this->translateContext(
             'Core module that make application support announcements',
-            context: 'module'
+            'module',
+            'core-module'
         );
     }
 }

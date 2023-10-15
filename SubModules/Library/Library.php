@@ -11,17 +11,19 @@ final class Library extends CoreSubmoduleAbstract
 
     public function getName(): string
     {
-        return $this->translate(
+        return $this->translateContext(
             'Library & Books',
-            context: 'module'
+            'module',
+            'core-module'
         );
     }
 
     public function getDescription(): string
     {
-        return $this->translate(
+        return $this->translateContext(
             'Core module to make application support library application',
-            context: 'module'
+            'module',
+            'core-module'
         );
     }
 }

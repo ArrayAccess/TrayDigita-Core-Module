@@ -12,19 +12,17 @@ use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Assets\Assets;
 use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Controllers\Controllers;
 use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\EducationalInstitution\EducationalInstitution;
 use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Library\Library;
-use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Media\Media;
 use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Option\Option;
 use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Posts\Posts;
 use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Quiz\Quiz;
-use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Roles\Roles;
 use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Scheduler\Scheduler;
 use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\ServiceInitializer\ServiceInitializer;
 use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Templates\Templates;
 use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Translator\Translator;
-use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Users\Users;
 use ArrayAccess\TrayDigita\Benchmark\Aggregator\EventAggregator;
 use ArrayAccess\TrayDigita\Benchmark\Injector\ManagerProfiler;
 use ArrayAccess\TrayDigita\Database\Connection;
+use ArrayAccess\TrayDigita\L10n\Translations\Adapter\Gettext\PoMoAdapter;
 use ArrayAccess\TrayDigita\Module\AbstractModule;
 use ArrayAccess\TrayDigita\Traits\Service\TranslatorTrait;
 use ArrayAccess\TrayDigita\Util\Filter\ContainerHelper;
@@ -61,16 +59,13 @@ final class Core extends AbstractModule
         Controllers::class,
         EducationalInstitution::class,
         Library::class,
-        Media::class,
         Option::class,
         Posts::class,
         Quiz::class,
-        Roles::class,
         Scheduler::class,
         ServiceInitializer::class,
         Templates::class,
         Translator::class,
-        Users::class,
     ];
 
     /**
@@ -85,17 +80,19 @@ final class Core extends AbstractModule
 
     public function getName(): string
     {
-        return $this->translate(
+        return $this->translateContext(
             'Core',
-            context: 'module'
+            'module',
+            'core-module'
         );
     }
 
     public function getDescription(): string
     {
-        return $this->translate(
+        return $this->translateContext(
             'Main core module',
-            context: 'module'
+            'module',
+            'core-module'
         );
     }
 
@@ -103,6 +100,15 @@ final class Core extends AbstractModule
     {
         if ($this->didInit) {
             return;
+        }
+
+        foreach ($this->getTranslator()?->getAdapters()??[] as $adapter) {
+            if ($adapter instanceof PoMoAdapter) {
+                $adapter->registerDirectory(
+                    __DIR__ .'/Languages',
+                    'core-module'
+                );
+            }
         }
 
         $this->didInit = true;

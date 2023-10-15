@@ -11,9 +11,6 @@ use ArrayAccess\TrayDigita\Database\Helper\Expression;
 use ArrayAccess\TrayDigita\Util\Filter\ContainerHelper;
 use Doctrine\Common\Collections\Selectable;
 use Doctrine\Persistence\ObjectRepository;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
-use Throwable;
 use function array_values;
 
 final class Option extends CoreSubmoduleAbstract
@@ -26,25 +23,24 @@ final class Option extends CoreSubmoduleAbstract
 
     public function getName(): string
     {
-        return $this->translate(
+        return $this->translateContext(
             'Site Option',
-            context: 'module'
+            'module',
+            'core-module'
         );
     }
 
     public function getDescription(): string
     {
-        return $this->translate(
+        return $this->translateContext(
             'Core module to make application support option setting',
-            context: 'module'
+            'module',
+            'core-module'
         );
     }
 
     /**
      * @return ObjectRepository<OptionEntity>&Selectable<OptionEntity>
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
-     * @throws Throwable
      */
     public function getRepository() : ObjectRepository&Selectable
     {

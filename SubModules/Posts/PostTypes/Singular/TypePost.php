@@ -19,6 +19,7 @@ class TypePost extends SinglePostAbstract
         if ($this->postInit) {
             return $this->post;
         }
+        /** @noinspection DuplicatedCode */
         if ($this->post) {
             return $this->post;
         }

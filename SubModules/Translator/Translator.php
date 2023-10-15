@@ -14,17 +14,19 @@ class Translator extends CoreSubmoduleAbstract
 
     public function getName(): string
     {
-        return $this->translate(
+        return $this->translateContext(
             'Extended Translator',
-            context: 'module'
+            'module',
+            'core-module'
         );
     }
 
     public function getDescription(): string
     {
-        return $this->translate(
+        return $this->translateContext(
             'Core module to support translation',
-            context: 'module'
+            'module',
+            'core-module'
         );
     }
 
