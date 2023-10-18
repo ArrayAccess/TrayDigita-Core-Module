@@ -9,28 +9,32 @@ if (!isset($this)) {
     return;
 }
 
+use ArrayAccess\TrayDigita\App\Modules\Core\Core;
 use ArrayAccess\TrayDigita\Kernel\Interfaces\KernelInterface;
-use ArrayAccess\TrayDigita\L10n\Translations\Interfaces\TranslatorInterface;
+use ArrayAccess\TrayDigita\Module\Modules;
 use ArrayAccess\TrayDigita\Util\Filter\ContainerHelper;
 use ArrayAccess\TrayDigita\View\Engines\AbstractEngine;
 
 // phpcs:disable Generic.Files.LineLength.TooLong
-$translator = ContainerHelper::service(TranslatorInterface::class, $this->getView()->getContainer());
-$kernel = ContainerHelper::service(KernelInterface::class, $this->getView()->getContainer());
+$core = ContainerHelper::service(Modules::class, $this->getView()->getContainer())
+    ->get(Core::class);
+$kernel = $core->getKernel();
+$translator = $core->getTranslator();
 ?>
 <!DOCTYPE html>
 <html class="no-js" lang="<?= htmlspecialchars($parameters['language']??'en');?>">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlentities($translator->translate('Installation'));?></title>
-    <link rel="stylesheet" href="<?= $this->getView()->getBaseURI('assets@install/css/install.css?v=1.0.0');?>" media="all">
-    <script src="<?= $this->getView()->getBaseURI('assets@install/js/install.js?v=1.0.0');?>"></script>
+    <meta name="robots" content="noindex, nofollow, noodp, noydir, noarchive">
+    <title><?= htmlentities($core->translateContext('Installation', 'installation', 'core-module'));?></title>
+    <link rel="stylesheet" href="<?= $this->getView()->getBaseURI('assets@core/css/install.css?v=1.0.0');?>" media="all">
+    <script src="<?= $this->getView()->getBaseURI('assets@core/js/install.js?v=1.0.0');?>"></script>
 </head>
 <body>
 <div id="page" class="page-wrapper">
     <?php
-    switch ($kernel->getConfigError()) {
+    switch ($core->getKernel()->getConfigError()) {
         case KernelInterface::CONFIG_UNAVAILABLE:
             require __DIR__ . '/contents/config-unavailable.phtml';
             break;

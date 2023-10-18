@@ -13,7 +13,7 @@ final class Quiz extends CoreSubmoduleAbstract
     {
         return $this->translateContext(
             'Quiz',
-            'module',
+            'module-info',
             'core-module'
         );
     }
@@ -22,7 +22,7 @@ final class Quiz extends CoreSubmoduleAbstract
     {
         return $this->translateContext(
             'Core module to make application support quiz & course',
-            'module',
+            'module-info',
             'core-module'
         );
     }

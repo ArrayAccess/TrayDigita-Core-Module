@@ -13,7 +13,7 @@ final class EducationalInstitution extends CoreSubmoduleAbstract
     {
         return $this->translateContext(
             'Educational Institution',
-            'module',
+            'module-info',
             'core-module'
         );
     }
@@ -22,7 +22,7 @@ final class EducationalInstitution extends CoreSubmoduleAbstract
     {
         return $this->translateContext(
             'Core module to make application support educational structure',
-            'module',
+            'module-info',
             'core-module'
         );
     }

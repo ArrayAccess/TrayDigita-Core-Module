@@ -13,7 +13,7 @@ final class Controllers extends CoreSubmoduleAbstract
     {
         return $this->translateContext(
             'Controller Module',
-            'module',
+            'module-info',
             'core-module'
         );
     }
@@ -22,7 +22,7 @@ final class Controllers extends CoreSubmoduleAbstract
     {
         return $this->translateContext(
             'Core module to controller working properly',
-            'module',
+            'module-info',
             'core-module'
         );
     }

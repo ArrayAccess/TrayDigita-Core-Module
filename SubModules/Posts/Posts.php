@@ -8,14 +8,11 @@ use ArrayAccess\TrayDigita\App\Modules\Core\Entities\Post;
 use ArrayAccess\TrayDigita\App\Modules\Core\Entities\PostCategory;
 use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Posts\Finder\CategoryFinder;
 use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Posts\Finder\PostFinder;
-use ArrayAccess\TrayDigita\Database\Connection;
 use ArrayAccess\TrayDigita\Database\Result\LazyResultCriteria;
-use ArrayAccess\TrayDigita\Util\Filter\ContainerHelper;
 use Doctrine\Common\Collections\Expr\Comparison;
 use Doctrine\Common\Collections\Expr\CompositeExpression;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Schema\SchemaException;
-use Throwable;
 
 final class Posts extends CoreSubmoduleAbstract
 {
@@ -29,7 +26,7 @@ final class Posts extends CoreSubmoduleAbstract
     {
         return $this->translateContext(
             'Post & Articles',
-            'module',
+            'module-info',
             'core-module'
         );
     }
@@ -38,37 +35,23 @@ final class Posts extends CoreSubmoduleAbstract
     {
         return $this->translateContext(
             'Core module to make application support posts publishing',
-            'module',
+            'module-info',
             'core-module'
         );
     }
 
     public function getPostFinder(): ?PostFinder
     {
-        try {
-            return $this->postFinder ??= ContainerHelper::resolveCallable(
-                PostFinder::class,
-                $this->getContainer()
-            );
-        } catch (Throwable) {
-            return new PostFinder(
-                ContainerHelper::service(Connection::class, $this->getContainer())
-            );
-        }
+        return $this->postFinder ??= new PostFinder(
+            $this->core->getConnection()
+        );
     }
 
     public function getCategoryFinder(): ?CategoryFinder
     {
-        try {
-            return $this->categoryFinder ??= ContainerHelper::resolveCallable(
-                CategoryFinder::class,
-                $this->getContainer()
-            );
-        } catch (Throwable) {
-            return new CategoryFinder(
-                ContainerHelper::service(Connection::class, $this->getContainer())
-            );
-        }
+        return $this->categoryFinder ??= new CategoryFinder(
+            $this->core->getConnection()
+        );
     }
 
     public function findPostById(int $id): ?Post

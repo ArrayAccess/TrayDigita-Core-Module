@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: TrayDigita Core Module 1.0.0\n"
-"POT-Creation-Date: 2023-10-16 00:01+0700\n"
+"POT-Creation-Date: 2023-10-19 03:54+0700\n"
 "PO-Revision-Date: 2023-09-24 19:00+0700\n"
 "Last-Translator: ArrayAccess\n"
 "Language-Team: ArrayAccess\n"
@@ -27,3 +27,181 @@ msgstr ""
 "X-Poedit-SearchPathExcluded-0: *.css\n"
 "X-Poedit-SearchPathExcluded-1: *.html\n"
 "X-Poedit-SearchPathExcluded-2: *.json\n"
+
+#: Benchmarks/CoreModuleAggregator.php:43
+msgctxt "benchmark"
+msgid "Event"
+msgstr ""
+
+#: Core.php:115
+msgctxt "module-info"
+msgid "Core"
+msgstr ""
+
+#: Core.php:132
+msgctxt "module-info"
+msgid "Main core module"
+msgstr ""
+
+#: SubModules/Announcement/Announcement.php:20
+msgctxt "module-info"
+msgid "Announcement"
+msgstr ""
+
+#: SubModules/Announcement/Announcement.php:29
+msgctxt "module-info"
+msgid ""
+"Core module that make application support announcements"
+msgstr ""
+
+#: SubModules/Api/Api.php:19
+msgctxt "module-info"
+msgid "Core module to help api controller working properly"
+msgstr ""
+
+#: SubModules/Assets/Assets.php:27
+msgctxt "module-info"
+msgid "Assets Helper"
+msgstr ""
+
+#: SubModules/Assets/Assets.php:36
+msgctxt "module-info"
+msgid "Core module that help assets rendering"
+msgstr ""
+
+#: SubModules/Controllers/Controllers.php:15
+msgctxt "module-info"
+msgid "Controller Module"
+msgstr ""
+
+#: SubModules/Controllers/Controllers.php:24
+msgctxt "module-info"
+msgid "Core module to controller working properly"
+msgstr ""
+
+#: SubModules/EducationalInstitution/EducationalInstitution.php:15
+msgctxt "module-info"
+msgid "Educational Institution"
+msgstr ""
+
+#: SubModules/EducationalInstitution/EducationalInstitution.php:24
+msgctxt "module-info"
+msgid ""
+"Core module to make application support educational "
+"structure"
+msgstr ""
+
+#: SubModules/Library/Library.php:15
+msgctxt "module-info"
+msgid "Library & Books"
+msgstr ""
+
+#: SubModules/Library/Library.php:24
+msgctxt "module-info"
+msgid ""
+"Core module to make application support library "
+"application"
+msgstr ""
+
+#: SubModules/Option/Option.php:25
+msgctxt "module-info"
+msgid "Site Option"
+msgstr ""
+
+#: SubModules/Option/Option.php:34
+msgctxt "module-info"
+msgid ""
+"Core module to make application support option setting"
+msgstr ""
+
+#: SubModules/Posts/Posts.php:28
+msgctxt "module-info"
+msgid "Post & Articles"
+msgstr ""
+
+#: SubModules/Posts/Posts.php:37
+msgctxt "module-info"
+msgid ""
+"Core module to make application support posts publishing"
+msgstr ""
+
+#: SubModules/Quiz/Quiz.php:15
+msgctxt "module-info"
+msgid "Quiz"
+msgstr ""
+
+#: SubModules/Quiz/Quiz.php:24
+msgctxt "module-info"
+msgid ""
+"Core module to make application support quiz & course"
+msgstr ""
+
+#: SubModules/Scheduler/Scheduler.php:24
+msgctxt "module-info"
+msgid "Database Scheduler"
+msgstr ""
+
+#: SubModules/Scheduler/Scheduler.php:33
+msgctxt "module-info"
+msgid ""
+"Core module to make application support database storage "
+"record for scheduler"
+msgstr ""
+
+#: SubModules/ServiceInitializer/ServiceInitializer.php:37
+msgctxt "module-info"
+msgid "Service Initializer"
+msgstr ""
+
+#: SubModules/ServiceInitializer/ServiceInitializer.php:46
+msgctxt "module-info"
+msgid "Core module to make application run properly"
+msgstr ""
+
+#: SubModules/Sites/Sites.php:31
+msgctxt "module-info"
+msgid "Site"
+msgstr ""
+
+#: SubModules/Sites/Sites.php:40
+msgctxt "module-info"
+msgid "Core module for site"
+msgstr ""
+
+#: SubModules/Templates/Templates.php:27
+msgctxt "module-info"
+msgid "Templates Helper"
+msgstr ""
+
+#: SubModules/Templates/Templates.php:36
+msgctxt "module-info"
+msgid "Core module to support templating"
+msgstr ""
+
+#: SubModules/Translator/Translator.php:18
+msgctxt "module-info"
+msgid "Extended Translator"
+msgstr ""
+
+#: SubModules/Translator/Translator.php:27
+msgctxt "module-info"
+msgid "Core module to support translation"
+msgstr ""
+
+#: SubModules/ServiceInitializer/Controllers/Views/contents/config-unavailable.phtml:22
+#: SubModules/ServiceInitializer/Controllers/Views/install.phtml:30
+msgctxt "installation"
+msgid "Installation"
+msgstr ""
+
+#: SubModules/ServiceInitializer/Controllers/Views/modules.phtml:33
+msgctxt "module-not-found"
+msgid "Required Module Not Installed"
+msgstr ""
+
+#: SubModules/ServiceInitializer/Controllers/Views/modules.phtml:42
+msgctxt "module-not-found"
+msgid "Required Module Not Found"
+msgid_plural "Required Modules Not Found"
+msgstr[0] ""
+msgstr[1] ""

@@ -5,9 +5,7 @@ namespace ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Api;
 
 use ArrayAccess\TrayDigita\App\Modules\Core\Abstracts\CoreSubmoduleAbstract;
 use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Api\TwigExtensions\UrlExtension;
-use ArrayAccess\TrayDigita\Util\Filter\ContainerHelper;
 use ArrayAccess\TrayDigita\View\Engines\TwigEngine;
-use ArrayAccess\TrayDigita\View\Interfaces\ViewInterface;
 
 final class Api extends CoreSubmoduleAbstract
 {
@@ -19,17 +17,14 @@ final class Api extends CoreSubmoduleAbstract
     {
         return $this->translateContext(
             'Core module to help api controller working properly',
-            'module',
+            'module-info',
             'core-module'
         );
     }
 
     protected function doInit(): void
     {
-        $twig = ContainerHelper::use(
-            ViewInterface::class,
-            $this->getContainer()
-        )?->getEngine('twig');
+        $twig = $this->core->getView()->getEngine('twig');
         if ($twig instanceof TwigEngine) {
             $twig->addExtension(new UrlExtension($twig));
         }

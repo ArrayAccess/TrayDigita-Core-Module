@@ -1,0 +1,58 @@
+<?php
+declare(strict_types=1);
+
+/**
+ * @var AbstractEngine $this
+ * @var array $parameters
+ */
+if (!isset($this)) {
+    return;
+}
+
+use ArrayAccess\TrayDigita\App\Modules\Core\Core;
+use ArrayAccess\TrayDigita\Module\Modules;
+use ArrayAccess\TrayDigita\Util\Filter\ContainerHelper;
+use ArrayAccess\TrayDigita\View\Engines\AbstractEngine;
+
+// phpcs:disable Generic.Files.LineLength.TooLong
+$core = ContainerHelper::service(Modules::class, $this->getView()->getContainer())
+    ->get(Core::class);
+$requiredModules = [];
+foreach ($core->getRequiredModules() as $module) {
+    if (!$core->getModules()->has($module)) {
+        $requiredModules[] = $module;
+    }
+}
+?>
+<!DOCTYPE html>
+<html class="no-js" lang="<?= htmlspecialchars($parameters['language']??$core->getTranslator()?->getLanguage()??'en');?>">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow, noodp, noydir, noarchive">
+    <title><?= htmlentities($core->translateContext('Required Module Not Installed', 'module-not-found', 'core-module'));?></title>
+    <link rel="stylesheet" href="<?= $this->getView()->getBaseURI('assets@core/css/maintenance.css?v=1.0.0');?>" media="all">
+</head>
+<body>
+<div id="page" class="page-wrapper">
+    <div class="container">
+        <h1 class="page-title">503</h1>
+        <h3 class="page-subtitle"><?=
+            $core->translatePluralContext(
+                'Required Module Not Found',
+                'Required Modules Not Found',
+                count($requiredModules),
+                'module-not-found',
+                'core-module'
+            );
+        ?></h3>
+        <ul class="module-list">
+        <?php foreach ($requiredModules as $module) {?>
+            <li><?= basename(str_replace('\\', '/', $module));?></li>
+        <?php } ?>
+
+        </ul>
+    </div>
+</div>
+</body>
+</html>

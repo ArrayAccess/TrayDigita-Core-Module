@@ -9,7 +9,6 @@ use ArrayAccess\TrayDigita\Assets\AssetsJsCssQueue;
 use ArrayAccess\TrayDigita\Http\Uri;
 use ArrayAccess\TrayDigita\Util\Filter\ContainerHelper;
 use ArrayAccess\TrayDigita\View\Engines\TwigEngine;
-use ArrayAccess\TrayDigita\View\Interfaces\ViewInterface;
 use function array_filter;
 use function is_scalar;
 use function is_string;
@@ -22,14 +21,12 @@ final class Assets extends CoreSubmoduleAbstract
 
     protected AssetsJsCssQueue $assetQueue;
 
-    private ?ViewInterface $view;
-
     public function getName(): string
     {
         return $this->translateContext(
             'Assets Helper',
-            'core-module',
-            'module'
+            'module-info',
+            'core-module'
         );
     }
 
@@ -37,25 +34,24 @@ final class Assets extends CoreSubmoduleAbstract
     {
         return $this->translateContext(
             'Core module that help assets rendering',
-            'core-module',
-            'module'
+            'module-info',
+            'core-module'
         );
     }
 
     protected function doInit(): void
     {
-        $this->assetQueue = ContainerHelper::use(
+        $this->assetQueue = ContainerHelper::service(
             AssetsJsCssQueue::class,
             $this->getContainer()
         );
 
-        $this->view = ContainerHelper::use(ViewInterface::class, $this->getContainer());
         $this->registerFactoryAssets();
-        $twig = $this->view?->getEngine('twig');
+        $twig = $this->core->getView()->getEngine('twig');
         if ($twig instanceof TwigEngine) {
             $twig->addExtension(new AssetsExtension($this));
         }
-        unset($this->view, $twig);
+        unset($twig);
 
         // @attach(view.contentHeader)
         $this->getManager()?->attach(
@@ -91,7 +87,7 @@ final class Assets extends CoreSubmoduleAbstract
                 $version = $list['version'] ?? null;
                 $inherits = $list['inherits'] ?? [];
                 if (!preg_match('~(https?:)?//~', $url)) {
-                    $url = $this->view?->getBaseURI($url)??$url;
+                    $url = $this->core->getView()->getBaseURI($url)??$url;
                 } else {
                     $url = new Uri($url);
                 }
@@ -137,7 +133,7 @@ final class Assets extends CoreSubmoduleAbstract
         return $this->assetQueue;
     }
 
-    public function contentHeaderEvent(): void
+    public function contentHeaderEvent($args)
     {
         // @detach(view.contentHeader)
         $this->getManager()?->detach(
@@ -145,9 +141,10 @@ final class Assets extends CoreSubmoduleAbstract
             [$this, 'contentHeaderEvent']
         );
         echo $this->getAssetQueue()->renderHeader();
+        return $args;
     }
 
-    private function contentFooterEvent(): void
+    private function contentFooterEvent($args)
     {
         // @detach(view.contentFooter)
         $this->getManager()?->detach(
@@ -159,6 +156,7 @@ final class Assets extends CoreSubmoduleAbstract
         echo $this->getAssetQueue()->renderLastCss();
         echo $this->getAssetQueue()->renderFooter();
         echo $this->getAssetQueue()->renderLastScript();
+        return $args;
     }
 
     const CSS = [

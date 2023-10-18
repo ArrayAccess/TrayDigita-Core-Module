@@ -100,7 +100,7 @@ class EntityLoader extends LocalRecordLoader
         ))->withStatusCode($statusCode);
     }
 
-    private function saveRecord(LastRecord $record, ?string $status = null): void
+    private function saveRecord(LastRecord $record, Runner $runner, ?string $status = null): void
     {
         $isFinish = $status === self::FINISH;
         switch ($status) {
@@ -121,6 +121,10 @@ class EntityLoader extends LocalRecordLoader
                     $entity->setName($task->getName());
                     $entity->setIdentity($this->taskNameHash($task));
                 }
+                if ($isFinish || $status === Runner::STATUS_EXITED) {
+                    $entity->setExecuteDuration($runner->getExecutionDuration());
+                }
+
                 $entity->setFinishTime(
                     $isFinish ? time() : $entity->getFinishTime()
                 );
@@ -139,7 +143,7 @@ class EntityLoader extends LocalRecordLoader
     {
         $record = parent::storeExitRunner($runner, $scheduler);
         if ($record) {
-            $this->saveRecord($record, self::EXITED);
+            $this->saveRecord($record, $runner, self::EXITED);
         }
         return $record;
     }
@@ -148,7 +152,7 @@ class EntityLoader extends LocalRecordLoader
     {
         $record = parent::doSkipProgress($runner, $scheduler);
         if ($record) {
-            $this->saveRecord($record, self::SKIPPED);
+            $this->saveRecord($record, $runner, self::SKIPPED);
         }
         return $record;
     }
@@ -157,7 +161,7 @@ class EntityLoader extends LocalRecordLoader
     {
         $record = parent::doStartProgress($runner, $scheduler);
         if ($record) {
-            $this->saveRecord($record, self::PROGRESS);
+            $this->saveRecord($record, $runner, self::PROGRESS);
         }
         return $record;
     }
@@ -166,7 +170,7 @@ class EntityLoader extends LocalRecordLoader
     {
         $record = parent::finish($executionTime, $runner, $scheduler);
         if ($record) {
-            $this->saveRecord($record, self::FINISH);
+            $this->saveRecord($record, $runner, self::FINISH);
         }
         return $record;
     }

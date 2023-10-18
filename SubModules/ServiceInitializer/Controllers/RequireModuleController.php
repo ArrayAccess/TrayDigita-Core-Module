@@ -3,20 +3,15 @@ declare(strict_types=1);
 
 namespace ArrayAccess\TrayDigita\App\Modules\Core\SubModules\ServiceInitializer\Controllers;
 
-use ArrayAccess\TrayDigita\Http\RequestResponseExceptions\NotFoundException;
+use ArrayAccess\TrayDigita\Http\Code;
 use ArrayAccess\TrayDigita\Routing\Attributes\Any;
 use ArrayAccess\TrayDigita\Routing\Attributes\Group;
-use ArrayAccess\TrayDigita\Util\Filter\MimeType;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use function filemtime;
-use function is_file;
-use function is_string;
 use const PHP_INT_MIN;
 
-// @todo add installation
 #[Group('')]
-class InstallController extends AbstractServiceController
+class RequireModuleController extends AbstractServiceController
 {
     #[Any(
         pattern: '/assets@core/(js|css|png|svg)/([^/]+\.\1)',
@@ -38,27 +33,16 @@ class InstallController extends AbstractServiceController
         pattern: '/.*',
         priority: PHP_INT_MIN + 10
     )]
-    public function any() : ResponseInterface
-    {
-        return $this->redirect(
-            $this->getView()->getBaseURI('/install')
-        );
-    }
-
-    #[Any(
-        pattern: '/install',
-        priority: PHP_INT_MIN
-    )]
-    public function doInstall(
+    public function any(
         ServerRequestInterface $request,
         ResponseInterface $response
-    ): ResponseInterface {
+    ) : ResponseInterface {
         return $this->render(
-            'install',
+            'modules',
             [
                 'request' => $request
             ],
             $response
-        );
+        )->withStatus(Code::SERVICE_UNAVAILABLE);
     }
 }

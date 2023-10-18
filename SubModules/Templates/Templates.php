@@ -9,8 +9,6 @@ use ArrayAccess\TrayDigita\Kernel\Interfaces\KernelInterface;
 use ArrayAccess\TrayDigita\Templates\Middlewares\TemplateLoaderMiddleware;
 use ArrayAccess\TrayDigita\Templates\Wrapper;
 use ArrayAccess\TrayDigita\Util\Filter\ContainerHelper;
-use ArrayAccess\TrayDigita\View\Interfaces\ViewInterface;
-use Throwable;
 use function is_string;
 
 final class Templates extends CoreSubmoduleAbstract
@@ -27,7 +25,7 @@ final class Templates extends CoreSubmoduleAbstract
     {
         return $this->translateContext(
             'Templates Helper',
-            'module',
+            'module-info',
             'core-module'
         );
     }
@@ -36,7 +34,7 @@ final class Templates extends CoreSubmoduleAbstract
     {
         return $this->translateContext(
             'Core module to support templating',
-            'module',
+            'module-info',
             'core-module'
         );
     }
@@ -52,19 +50,23 @@ final class Templates extends CoreSubmoduleAbstract
         $this->getManager()->attach('kernel.afterInitModules', [$this, 'initSetTemplate']);
     }
 
-    private function initSetTemplate(KernelInterface $kernel): void
+    private function initSetTemplate($module, KernelInterface $kernel)
     {
         // @detach(kernel.afterInitModules)
         $this->getManager()->detach('kernel.afterInitModules', [$this, 'initSetTemplate']);
         if ($kernel->getConfigError()) {
-            return;
+            return $module;
         }
-        $wrapper = ContainerHelper::service(Wrapper::class, $this->getContainer());
-        $view    = ContainerHelper::service(ViewInterface::class, $this->getContainer());
-        if (!$wrapper || !$view) {
-            return;
+        $view = $this->core->getView();
+        $templateRule = $view->getTemplateRule();
+        $wrapper = $templateRule?->getWrapper()
+            ??ContainerHelper::service(Wrapper::class, $this->getContainer());
+        if (!$wrapper) {
+            return $module;
         }
-        $this->templateRule = new TemplateRule($wrapper);
+        $this->templateRule = $templateRule instanceof TemplateRule
+            ? $templateRule
+            : new TemplateRule($wrapper);
         $this->templateRule->initialize();
         $view->setTemplateRule($this->templateRule);
 
@@ -82,7 +84,7 @@ final class Templates extends CoreSubmoduleAbstract
         }
 
         /**
-         * add middleware to load templates.php
+         * add middleware to load template.php
          * @see TemplateLoaderMiddleware::doProcess()
          */
         $kernel->getHttpKernel()->addMiddleware(
@@ -90,5 +92,6 @@ final class Templates extends CoreSubmoduleAbstract
                 $view->getContainer()??$this->getContainer()
             )
         );
+        return $module;
     }
 }

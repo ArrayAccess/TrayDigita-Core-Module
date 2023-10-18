@@ -9,9 +9,7 @@ use ArrayAccess\TrayDigita\App\Modules\Core\Entities\LogItem;
 use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\ServiceInitializer\Middlewares\ErrorMiddleware;
 use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\ServiceInitializer\Middlewares\InitMiddleware;
 use ArrayAccess\TrayDigita\Collection\Config;
-use ArrayAccess\TrayDigita\Database\Connection;
 use ArrayAccess\TrayDigita\L10n\Languages\Locale;
-use ArrayAccess\TrayDigita\L10n\Translations\Interfaces\TranslatorInterface;
 use ArrayAccess\TrayDigita\Util\Filter\Consolidation;
 use ArrayAccess\TrayDigita\Util\Filter\ContainerHelper;
 use Psr\Http\Server\MiddlewareInterface;
@@ -37,7 +35,7 @@ final class ServiceInitializer extends CoreSubmoduleAbstract
     {
         return $this->translateContext(
             'Service Initializer',
-            'module',
+            'module-info',
             'core-module'
         );
     }
@@ -46,7 +44,7 @@ final class ServiceInitializer extends CoreSubmoduleAbstract
     {
         return $this->translateContext(
             'Core module to make application run properly',
-            'module',
+            'module-info',
             'core-module'
         );
     }
@@ -80,16 +78,20 @@ final class ServiceInitializer extends CoreSubmoduleAbstract
                 [$this, 'eventBlackListedCommand']
             );
         $args = !is_array($args) ? [] : $args;
-        $connection = ContainerHelper::use(Connection::class, $this->getContainer());
-        if (!$connection) {
-            return $args;
-        }
-        $logItem = $connection->getEntityManager()->getClassMetadata(
-            LogItem::class
-        )->getTableName();
-        $cacheItem = $connection->getEntityManager()->getClassMetadata(
-            CacheItem::class
-        )->getTableName();
+        $logItem = $this
+            ->core
+            ->getConnection()
+            ->getEntityManager()
+            ->getClassMetadata(
+                LogItem::class
+            )->getTableName();
+        $cacheItem = $this
+            ->core
+            ->getConnection()
+            ->getEntityManager()
+            ->getClassMetadata(
+                CacheItem::class
+            )->getTableName();
         $args[$logItem] = true;
         $args[$cacheItem] = true;
         return $args;
@@ -131,7 +133,6 @@ final class ServiceInitializer extends CoreSubmoduleAbstract
         if (!$language) {
             return;
         }
-        ContainerHelper::use(TranslatorInterface::class, $this->getContainer())
-            ->setLanguage($language);
+        $this->core->getTranslator()?->setLanguage($language);
     }
 }

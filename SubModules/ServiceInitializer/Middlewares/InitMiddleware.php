@@ -3,16 +3,17 @@ declare(strict_types=1);
 
 namespace ArrayAccess\TrayDigita\App\Modules\Core\SubModules\ServiceInitializer\Middlewares;
 
+use ArrayAccess\TrayDigita\App\Modules\Core\Core;
 use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\ServiceInitializer\Controllers\InstallController;
+use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\ServiceInitializer\Controllers\RequireModuleController;
 use ArrayAccess\TrayDigita\Http\Interfaces\HttpExceptionInterface;
-use ArrayAccess\TrayDigita\Kernel\Interfaces\KernelInterface;
 use ArrayAccess\TrayDigita\L10n\Translations\Interfaces\TranslatorInterface;
 use ArrayAccess\TrayDigita\Middleware\AbstractMiddleware;
+use ArrayAccess\TrayDigita\Module\Modules;
 use ArrayAccess\TrayDigita\Routing\Interfaces\RouterInterface;
 use ArrayAccess\TrayDigita\Routing\MatchedRoute;
 use ArrayAccess\TrayDigita\Util\Filter\Consolidation;
 use ArrayAccess\TrayDigita\Util\Filter\ContainerHelper;
-use ArrayAccess\TrayDigita\View\Interfaces\ViewInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use const PHP_INT_MAX;
@@ -28,22 +29,41 @@ class InitMiddleware extends AbstractMiddleware
     {
         // enhance views
         $container = $this->getContainer();
-        $translator = ContainerHelper::use(TranslatorInterface::class, $container);
-        $view = ContainerHelper::use(ViewInterface::class, $container);
+        $core = ContainerHelper::service(Modules::class)
+            ->get(Core::class);
+        $translator = $core->getTranslator()??ContainerHelper::use(TranslatorInterface::class, $container);
+        $view = $core->getView();
         if ($translator) {
-            $view?->setRequest($request);
-            $view?->setParameter(
-                'language',
-                $translator->getLanguage()
-            );
+            $view->setRequest($request);
+            $view->setParameter('language', $translator->getLanguage());
         }
-        $kernel = ContainerHelper::use(KernelInterface::class, $container);
-        if (!$kernel->getConfigError() || Consolidation::isCli()) {
+
+        if (Consolidation::isCli()) {
             return $request;
         }
+
         // REGISTER CONTROLLER IF CONFIG ERRORS
-        $router = ContainerHelper::service(RouterInterface::class, $container);
-        $router->addRouteController(InstallController::class);
+        $router = $core->getKernel()->getHttpKernel()->getRouter();
+        if ($core->getKernel()->getConfigError()) {
+            $router->addRouteController(InstallController::class);
+            return $this->doHandle($router, $request);
+        }
+
+        foreach ($core->getRequiredModules() as $module) {
+            if (!$core->getModules()->has($module)) {
+                $router->addRouteController(RequireModuleController::class);
+                return $this->doHandle($router, $request);
+            }
+        }
+
+        return $request;
+    }
+
+    /**
+     * @throws HttpExceptionInterface
+     */
+    private function doHandle(RouterInterface $router, ServerRequestInterface $request)
+    {
         $matchedRoute = $router->dispatch($request);
         if ($matchedRoute instanceof MatchedRoute) {
             return $matchedRoute->handle($request);

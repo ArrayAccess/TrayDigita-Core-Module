@@ -13,7 +13,7 @@ final class Library extends CoreSubmoduleAbstract
     {
         return $this->translateContext(
             'Library & Books',
-            'module',
+            'module-info',
             'core-module'
         );
     }
@@ -22,7 +22,7 @@ final class Library extends CoreSubmoduleAbstract
     {
         return $this->translateContext(
             'Core module to make application support library application',
-            'module',
+            'module-info',
             'core-module'
         );
     }

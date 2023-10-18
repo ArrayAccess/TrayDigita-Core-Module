@@ -6,9 +6,7 @@ namespace ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Option;
 
 use ArrayAccess\TrayDigita\App\Modules\Core\Abstracts\CoreSubmoduleAbstract;
 use ArrayAccess\TrayDigita\App\Modules\Core\Entities\Option as OptionEntity;
-use ArrayAccess\TrayDigita\Database\Connection;
 use ArrayAccess\TrayDigita\Database\Helper\Expression;
-use ArrayAccess\TrayDigita\Util\Filter\ContainerHelper;
 use Doctrine\Common\Collections\Selectable;
 use Doctrine\Persistence\ObjectRepository;
 use function array_values;
@@ -25,7 +23,7 @@ final class Option extends CoreSubmoduleAbstract
     {
         return $this->translateContext(
             'Site Option',
-            'module',
+            'module-info',
             'core-module'
         );
     }
@@ -34,7 +32,7 @@ final class Option extends CoreSubmoduleAbstract
     {
         return $this->translateContext(
             'Core module to make application support option setting',
-            'module',
+            'module-info',
             'core-module'
         );
     }
@@ -44,10 +42,10 @@ final class Option extends CoreSubmoduleAbstract
      */
     public function getRepository() : ObjectRepository&Selectable
     {
-        return ContainerHelper::service(
-            Connection::class,
-            $this->getContainer()
-        )->getRepository(OptionEntity::class);
+        return $this
+            ->core
+            ->getConnection()
+            ->getRepository(OptionEntity::class);
     }
 
     public function createNewOptionEntityObject(
@@ -56,10 +54,10 @@ final class Option extends CoreSubmoduleAbstract
     ): OptionEntity {
         $option = new OptionEntity();
         $option->setEntityManager(
-            ContainerHelper::service(
-                Connection::class,
-                $this->getContainer()
-            )->getEntityManager()
+            $this
+                ->core
+                ->getConnection()
+                ->getEntityManager()
         );
         if ($name !== null) {
             $option->setName($name);
@@ -83,10 +81,10 @@ final class Option extends CoreSubmoduleAbstract
     {
         $em = null;
         foreach ($option as $opt) {
-            $em ??= $opt->getEntityManager()??ContainerHelper::service(
-                Connection::class,
-                $this->getContainer()
-            )->getEntityManager();
+            $em ??= $opt->getEntityManager()??$this
+                ->core
+                ->getConnection()
+                ->getEntityManager();
             $em->persist($opt);
         }
         $em->flush();
@@ -105,10 +103,10 @@ final class Option extends CoreSubmoduleAbstract
         $entity->setName($name);
         $entity->setValue($value);
         $entity->setAutoload($autoload);
-        $em = $entity->getEntityManager()??ContainerHelper::service(
-            Connection::class,
-            $this->getContainer()
-        )->getEntityManager();
+        $em = $entity->getEntityManager()??$this
+            ->core
+            ->getConnection()
+            ->getEntityManager();
         $em->persist($entity);
         $em->flush();
 

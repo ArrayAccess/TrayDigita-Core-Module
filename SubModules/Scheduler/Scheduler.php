@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Scheduler;
 
 use ArrayAccess\TrayDigita\App\Modules\Core\Abstracts\CoreSubmoduleAbstract;
-use ArrayAccess\TrayDigita\Database\Connection;
 use ArrayAccess\TrayDigita\Scheduler\Scheduler as CoreScheduler;
 use ArrayAccess\TrayDigita\Util\Filter\ContainerHelper;
 
@@ -23,7 +22,7 @@ final class Scheduler extends CoreSubmoduleAbstract
     {
         return $this->translateContext(
             'Database Scheduler',
-            'module',
+            'module-info',
             'core-module'
         );
     }
@@ -32,7 +31,7 @@ final class Scheduler extends CoreSubmoduleAbstract
     {
         return $this->translateContext(
             'Core module to make application support database storage record for scheduler',
-            'module',
+            'module-info',
             'core-module'
         );
     }
@@ -45,12 +44,7 @@ final class Scheduler extends CoreSubmoduleAbstract
         );
 
         $this->scheduler->setRecordLoader(
-            new EntityLoader(
-                ContainerHelper::service(
-                    Connection::class,
-                    $this->getContainer()
-                )
-            )
+            new EntityLoader($this->core->getConnection())
         );
     }
 

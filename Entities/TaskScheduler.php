@@ -125,6 +125,19 @@ class TaskScheduler extends AbstractEntity
     protected ?int $finish_time = null;
 
     #[Column(
+        name: 'execute_duration',
+        type: Types::FLOAT,
+        length: 10,
+        nullable: true,
+        options: [
+            'unsigned' => true,
+            'default' => null,
+            'comment' => 'Execution duration'
+        ]
+    )]
+    protected ?float $execute_duration = null;
+
+    #[Column(
         name: 'message',
         type: TypeList::DATA_BLOB,
         length: 4294967295,
@@ -140,6 +153,7 @@ class TaskScheduler extends AbstractEntity
     {
         $this->execution_time = 0;
         $this->finish_time = null;
+        $this->execute_duration = null;
         $this->message = null;
     }
 
@@ -201,6 +215,16 @@ class TaskScheduler extends AbstractEntity
     public function setFinishTime(?int $finish_time): void
     {
         $this->finish_time = $finish_time;
+    }
+
+    public function getExecuteDuration(): ?float
+    {
+        return $this->execute_duration;
+    }
+
+    public function setExecuteDuration(?float $execute_duration): void
+    {
+        $this->execute_duration = $execute_duration;
     }
 
     public function getMessage(): mixed

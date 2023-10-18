@@ -16,7 +16,7 @@ class Translator extends CoreSubmoduleAbstract
     {
         return $this->translateContext(
             'Extended Translator',
-            'module',
+            'module-info',
             'core-module'
         );
     }
@@ -25,7 +25,7 @@ class Translator extends CoreSubmoduleAbstract
     {
         return $this->translateContext(
             'Core module to support translation',
-            'module',
+            'module-info',
             'core-module'
         );
     }

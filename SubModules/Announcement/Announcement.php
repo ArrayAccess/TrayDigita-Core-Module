@@ -18,7 +18,7 @@ final class Announcement extends CoreSubmoduleAbstract
     {
         return $this->translateContext(
             'Announcement',
-            'module',
+            'module-info',
             'core-module'
         );
     }
@@ -27,7 +27,7 @@ final class Announcement extends CoreSubmoduleAbstract
     {
         return $this->translateContext(
             'Core module that make application support announcements',
-            'module',
+            'module-info',
             'core-module'
         );
     }

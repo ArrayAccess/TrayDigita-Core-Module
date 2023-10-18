@@ -5,7 +5,6 @@ namespace ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Sites;
 
 use ArrayAccess\TrayDigita\App\Modules\Core\Abstracts\CoreSubmoduleAbstract;
 use ArrayAccess\TrayDigita\App\Modules\Core\Entities\Site;
-use ArrayAccess\TrayDigita\Database\Connection;
 use ArrayAccess\TrayDigita\Database\Helper\Expression;
 use ArrayAccess\TrayDigita\Http\ServerRequest;
 use ArrayAccess\TrayDigita\Middleware\AbstractMiddleware;
@@ -30,7 +29,7 @@ final class Sites extends CoreSubmoduleAbstract
     {
         return $this->translateContext(
             'Site',
-            'module',
+            'module-info',
             'core-module'
         );
     }
@@ -39,7 +38,7 @@ final class Sites extends CoreSubmoduleAbstract
     {
         return $this->translateContext(
             'Core module for site',
-            'module',
+            'module-info',
             'core-module'
         );
     }
@@ -113,7 +112,9 @@ final class Sites extends CoreSubmoduleAbstract
                 Expression::eq('domain_alias', $subDomain),
             );
         }
-        $this->site = ContainerHelper::use(Connection::class, $container)
+        $this->site = $this
+            ->core
+            ->getConnection()
             ->getRepository(Site::class)
             ->matching(
                 Expression::criteria()

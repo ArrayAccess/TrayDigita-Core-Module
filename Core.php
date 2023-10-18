@@ -19,22 +19,32 @@ use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Scheduler\Scheduler;
 use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\ServiceInitializer\ServiceInitializer;
 use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Templates\Templates;
 use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Translator\Translator;
+use ArrayAccess\TrayDigita\App\Modules\Media\Media;
+use ArrayAccess\TrayDigita\App\Modules\Users\Users;
 use ArrayAccess\TrayDigita\Benchmark\Aggregator\EventAggregator;
 use ArrayAccess\TrayDigita\Benchmark\Injector\ManagerProfiler;
 use ArrayAccess\TrayDigita\Database\Connection;
-use ArrayAccess\TrayDigita\L10n\Translations\Adapter\Gettext\PoMoAdapter;
+use ArrayAccess\TrayDigita\HttpKernel\BaseKernel;
+use ArrayAccess\TrayDigita\L10n\Translations\Interfaces\AdapterBasedFileInterface;
 use ArrayAccess\TrayDigita\Module\AbstractModule;
+use ArrayAccess\TrayDigita\Module\Interfaces\ModuleInterface;
 use ArrayAccess\TrayDigita\Traits\Service\TranslatorTrait;
+use ArrayAccess\TrayDigita\Util\Filter\Consolidation;
 use ArrayAccess\TrayDigita\Util\Filter\ContainerHelper;
+use ArrayAccess\TrayDigita\View\Interfaces\ViewInterface;
 use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use function class_exists;
 use function strtolower;
+use const DIRECTORY_SEPARATOR;
 use const PHP_INT_MIN;
 
 final class Core extends AbstractModule
 {
     use TranslatorTrait;
 
+    /**
+     * @var string
+     */
     protected string $name = 'Core';
 
     /**
@@ -47,6 +57,9 @@ final class Core extends AbstractModule
      */
     protected int $priority = PHP_INT_MIN;
 
+    /**
+     * @var bool
+     */
     private bool $didInit = false;
 
     /**
@@ -78,20 +91,46 @@ final class Core extends AbstractModule
      */
     private array $priorities = [];
 
+    /**
+     * @var ViewInterface
+     */
+    private ViewInterface $view;
+
+    /**
+     * @var ?Connection
+     */
+    private ?Connection $connection = null;
+
+    /**
+     * @var array<class-string<ModuleInterface>
+     */
+    private array $requiredModules = [
+        Users::class,
+        Media::class,
+    ];
+
     public function getName(): string
     {
         return $this->translateContext(
             'Core',
-            'module',
+            'module-info',
             'core-module'
         );
+    }
+
+    /**
+     * @return array<class-string<ModuleInterface>
+     */
+    public function getRequiredModules(): array
+    {
+        return $this->requiredModules;
     }
 
     public function getDescription(): string
     {
         return $this->translateContext(
             'Main core module',
-            'module',
+            'module-info',
             'core-module'
         );
     }
@@ -102,8 +141,9 @@ final class Core extends AbstractModule
             return;
         }
 
+        $this->didInit = true;
         foreach ($this->getTranslator()?->getAdapters()??[] as $adapter) {
-            if ($adapter instanceof PoMoAdapter) {
+            if ($adapter instanceof AdapterBasedFileInterface) {
                 $adapter->registerDirectory(
                     __DIR__ .'/Languages',
                     'core-module'
@@ -111,9 +151,99 @@ final class Core extends AbstractModule
             }
         }
 
-        $this->didInit = true;
+        // register autoloader
+        Consolidation::registerAutoloader(__NAMESPACE__, __DIR__);
+        $this->view = ContainerHelper::service(ViewInterface::class, $this->getContainer());
+        $this->doOverrideController();
         $this->doRegisterEntities();
+        $this->doRegisterSubModules();
+    }
 
+    private function doOverrideController(): void
+    {
+        $factoryControllerNamespace = null;
+        $kernel = $this->getKernel();
+        (function (Core $core) use (&$factoryControllerNamespace) {
+            $kernel = $core->getKernel();
+            if (!$kernel instanceof BaseKernel) {
+                return;
+            }
+            $factoryControllerNamespace = $core->getKernel()->getControllerNameSpace();
+            $controllerNamespace = __NAMESPACE__ .'\\Controller\\';
+            $controllerDir = __DIR__ . DIRECTORY_SEPARATOR . 'Controllers';
+            Consolidation::registerAutoloader($controllerNamespace, $controllerDir);
+            $this->{'controllerNameSpace'} = $controllerNamespace;
+            $this->{'registeredDirectories'}[$controllerNamespace] = $controllerDir;
+        })->call($kernel, $this);
+        if (!$factoryControllerNamespace) {
+            return;
+        }
+        $manager = $this->getManager();
+        $idBefore = $manager->attach(
+            'console.beforeConfigureCommands',
+            static function ($e) use (&$idBefore, $factoryControllerNamespace, $manager, $kernel) {
+                $manager->detachByEventNameId(
+                    'console.beforeConfigureCommands',
+                    $idBefore
+                );
+                (function ($factoryControllerNamespace) {
+                    $this->{'controllerNameSpace'} = $factoryControllerNamespace;
+                })->call($kernel, $factoryControllerNamespace);
+                return $e;
+            }
+        );
+        $idAfter = $manager->attach(
+            'console.afterConfigureCommands',
+            static function ($e) use (&$idAfter, $manager, $kernel) {
+                $manager->detachByEventNameId(
+                    'console.afterConfigureCommands',
+                    $idAfter
+                );
+                (function () {
+                    $this->{'controllerNameSpace'} = __NAMESPACE__ .'\\Controller\\';
+                })->call($kernel);
+                return $e;
+            }
+        );
+    }
+
+    /**
+     * @return ViewInterface
+     */
+    public function getView(): ViewInterface
+    {
+        return $this->view;
+    }
+
+    public function getConnection(): Connection
+    {
+        return $this->connection ??= ContainerHelper::service(Connection::class, $this->getContainer());
+    }
+
+    /**
+     * Register entities, change from sub modules to core module
+     * and prevent longer latencies
+     * @return void
+     */
+    private function doRegisterEntities(): void
+    {
+        $metadata = $this->getConnection()
+            ->getDefaultConfiguration()
+            ->getMetadataDriverImpl();
+        if ($metadata instanceof AttributeDriver) {
+            $metadata->addPaths([
+                __DIR__ . '/Entities'
+            ]);
+        }
+    }
+
+    /**
+     * Register submodules
+     *
+     * @return void
+     */
+    private function doRegisterSubModules(): void
+    {
         $manager = $this->getManager();
         $listener = $manager->getDispatchListener();
         if ($listener instanceof ManagerProfiler
@@ -203,23 +333,9 @@ final class Core extends AbstractModule
     }
 
     /**
-     * Register entities, change from sub modules to core module
-     * and prevent longer latencies
-     * @return void
+     * Doing init modules
      */
-    private function doRegisterEntities(): void
-    {
-        $metadata = ContainerHelper::use(Connection::class, $this->getContainer())
-            ?->getDefaultConfiguration()
-            ->getMetadataDriverImpl();
-        if ($metadata instanceof AttributeDriver) {
-            $metadata->addPaths([
-                __DIR__ . '/Entities'
-            ]);
-        }
-    }
-
-    private function doInitSubModules(): void
+    private function doInitSubModules($modules)
     {
         $manager = $this->getManager();
         // @detach(kernel.afterInitModules)
@@ -252,5 +368,6 @@ final class Core extends AbstractModule
             // @detach(coreModule.afterInitModules)
             $manager->dispatch('coreModule.afterInitModules', $this);
         }
+        return $modules;
     }
 }
