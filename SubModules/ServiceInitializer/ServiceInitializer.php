@@ -117,9 +117,7 @@ final class ServiceInitializer extends CoreSubmoduleAbstract
                         ['serviceInitializer' => $this]
                     )
                 );
-            } catch (Throwable $e) {
-                echo $e;
-                exit;
+            } catch (Throwable) {
             }
         }
     }
