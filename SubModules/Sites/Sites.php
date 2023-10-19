@@ -51,7 +51,7 @@ final class Sites extends CoreSubmoduleAbstract
     private function doAddMiddleware(): void
     {
         $container = $this->getContainer();
-        $this->getKernel()?->getHttpKernel()->addMiddleware(
+        $this->getKernel()?->getHttpKernel()->addDeferredMiddleware(
             new class($container, $this) extends AbstractMiddleware {
                 protected int $priority = PHP_INT_MAX - 10;
                 public function __construct(

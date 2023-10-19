@@ -20,6 +20,23 @@ use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\ServiceInitializer\Servic
 use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Templates\Templates;
 use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Translator\Translator;
 use ArrayAccess\TrayDigita\App\Modules\Media\Media;
+use ArrayAccess\TrayDigita\App\Modules\Users\Entities\Admin;
+use ArrayAccess\TrayDigita\App\Modules\Users\Entities\AdminLog;
+use ArrayAccess\TrayDigita\App\Modules\Users\Entities\AdminMeta;
+use ArrayAccess\TrayDigita\App\Modules\Users\Entities\AdminOnlineActivity;
+use ArrayAccess\TrayDigita\App\Modules\Users\Entities\Attachment;
+use ArrayAccess\TrayDigita\App\Modules\Users\Entities\Capability;
+use ArrayAccess\TrayDigita\App\Modules\Users\Entities\Role;
+use ArrayAccess\TrayDigita\App\Modules\Users\Entities\RoleCapability;
+use ArrayAccess\TrayDigita\App\Modules\Users\Entities\User as UserEntity;
+use ArrayAccess\TrayDigita\App\Modules\Users\Entities\UserAttachment;
+use ArrayAccess\TrayDigita\App\Modules\Users\Entities\UserLog;
+use ArrayAccess\TrayDigita\App\Modules\Users\Entities\UserMeta;
+use ArrayAccess\TrayDigita\App\Modules\Users\Entities\UserOnlineActivity;
+use ArrayAccess\TrayDigita\App\Modules\Users\Entities\UserTerm;
+use ArrayAccess\TrayDigita\App\Modules\Users\Entities\UserTermGroup;
+use ArrayAccess\TrayDigita\App\Modules\Users\Entities\UserTermGroupMeta;
+use ArrayAccess\TrayDigita\App\Modules\Users\Entities\UserTermMeta;
 use ArrayAccess\TrayDigita\App\Modules\Users\Users;
 use ArrayAccess\TrayDigita\Benchmark\Aggregator\EventAggregator;
 use ArrayAccess\TrayDigita\Benchmark\Injector\ManagerProfiler;
@@ -32,6 +49,7 @@ use ArrayAccess\TrayDigita\Traits\Service\TranslatorTrait;
 use ArrayAccess\TrayDigita\Util\Filter\Consolidation;
 use ArrayAccess\TrayDigita\Util\Filter\ContainerHelper;
 use ArrayAccess\TrayDigita\View\Interfaces\ViewInterface;
+use Doctrine\DBAL\Exception;
 use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use function class_exists;
 use function strtolower;
@@ -79,6 +97,55 @@ final class Core extends AbstractModule
         ServiceInitializer::class,
         Templates::class,
         Translator::class,
+    ];
+
+    const ENTITY_CHECKING = [
+        'required' => [
+            Entities\Option::class,
+            Entities\Post::class,
+            Entities\PostCategory::class,
+            Entities\PostMeta::class,
+            Entities\TaskScheduler::class,
+            Admin::class,
+            AdminLog::class,
+            AdminMeta::class,
+            AdminOnlineActivity::class,
+            Attachment::class,
+            Capability::class,
+            Role::class,
+            RoleCapability::class,
+            UserEntity::class,
+            UserAttachment::class,
+            UserLog::class,
+            UserMeta::class,
+            UserOnlineActivity::class,
+            UserTerm::class,
+            UserTermGroup::class,
+            UserTermGroupMeta::class,
+            UserTermMeta::class,
+        ],
+        'optional' => [
+            Entities\Announcement::class,
+            Entities\Book::class,
+            Entities\BookAuthor::class,
+            Entities\BookCategory::class,
+            Entities\BookPublisher::class,
+            Entities\Classes::class,
+            Entities\ClassMeta::class,
+            Entities\Department::class,
+            Entities\DepartmentMeta::class,
+            Entities\Faculty::class,
+            Entities\FacultyMeta::class,
+            Entities\Question::class,
+            Entities\QuestionCategory::class,
+            Entities\Quiz::class,
+        ],
+        'additional' => [
+            Entities\CacheItem::class,
+            Entities\LogItem::class,
+            Entities\Translation::class,
+            Entities\Site::class,
+        ]
     ];
 
     /**
@@ -369,5 +436,39 @@ final class Core extends AbstractModule
             $manager->dispatch('coreModule.afterInitModules', $this);
         }
         return $modules;
+    }
+
+    /**
+     * @var ?array
+     */
+    private ?array $entityChecking = null;
+
+    /**
+     * @throws Exception
+     * @return array{
+     *     required: array<string, bool>,
+     *     optionsl: array<string, bool>,
+     *     additional: array<string, bool>,
+     *     tables: array<string, string>,
+     * }
+     */
+    public function checkEntity(): array
+    {
+        if ($this->entityChecking !== null) {
+            return $this->entityChecking;
+        }
+        $schema = $this->getConnection()->createSchemaManager();
+        $em = $this->getConnection()->getEntityManager();
+        $schema = $schema->introspectSchema();
+        $this->entityChecking = [];
+        foreach (self::ENTITY_CHECKING as $type => $entities) {
+            $this->entityChecking[$type] = [];
+            foreach ($entities as $entity) {
+                $metadata = $em->getClassMetadata($entity);
+                $this->entityChecking[$type][$entity] = $schema->hasTable($metadata->getTableName());
+                $this->entityChecking['tables'][$entity] = $metadata->getTableName();
+            }
+        }
+        return $this->entityChecking;
     }
 }

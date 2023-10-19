@@ -5,6 +5,7 @@ namespace ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Templates;
 
 use ArrayAccess\TrayDigita\App\Modules\Core\Abstracts\CoreSubmoduleAbstract;
 use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Option\Option;
+use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Templates\Middlewares\TemplateMiddleware;
 use ArrayAccess\TrayDigita\Kernel\Interfaces\KernelInterface;
 use ArrayAccess\TrayDigita\Templates\Middlewares\TemplateLoaderMiddleware;
 use ArrayAccess\TrayDigita\Templates\Wrapper;
@@ -57,6 +58,7 @@ final class Templates extends CoreSubmoduleAbstract
         if ($kernel->getConfigError()) {
             return $module;
         }
+
         $view = $this->core->getView();
         $templateRule = $view->getTemplateRule();
         $wrapper = $templateRule?->getWrapper()
@@ -64,30 +66,24 @@ final class Templates extends CoreSubmoduleAbstract
         if (!$wrapper) {
             return $module;
         }
+
         $this->templateRule = $templateRule instanceof TemplateRule
             ? $templateRule
             : new TemplateRule($wrapper);
         $this->templateRule->initialize();
         $view->setTemplateRule($this->templateRule);
-
-        $option = $this->getModules()->get(Option::class);
-        $active = $option?->get(self::ACTIVE_TEMPLATE_KEY)?->getValue();
-        if (is_string($active)) {
-            $this->templateRule->setActive($active);
-        }
-        $template = $this->templateRule->getActive();
-        if ($template) {
-            if ($template->getBasePath() !== $active && $option) {
-                $option->set(self::ACTIVE_TEMPLATE_KEY, $template->getBasePath(), true);
-            }
-            $view->setViewsDirectory([]);
-        }
+        $kernel->getHttpKernel()->addDeferredMiddleware(
+            new TemplateMiddleware(
+                $view->getContainer()??$this->getContainer(),
+                $this
+            )
+        );
 
         /**
          * add middleware to load template.php
          * @see TemplateLoaderMiddleware::doProcess()
          */
-        $kernel->getHttpKernel()->addMiddleware(
+        $kernel->getHttpKernel()->addDeferredMiddleware(
             new TemplateLoaderMiddleware(
                 $view->getContainer()??$this->getContainer()
             )

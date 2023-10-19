@@ -47,6 +47,9 @@ $translator = $core->getTranslator();
         case KernelInterface::CONFIG_NOT_ITERABLE:
             require __DIR__ . '/contents/config-not-iterable.phtml';
             break;
+        default:
+            require __DIR__ . '/contents/config-install.phtml';
+            break;
     }
     ?>
 </div>

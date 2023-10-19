@@ -23,6 +23,8 @@ final class ServiceInitializer extends CoreSubmoduleAbstract
 
     protected string $name = 'Service Initializer';
 
+    const LANGUAGE_COOKIE = 'language';
+
     /**
      * @var array<class-string<MiddlewareInterface>>
      */
@@ -107,11 +109,7 @@ final class ServiceInitializer extends CoreSubmoduleAbstract
             return;
         }
         foreach ($this->middlewares as $middleware) {
-            try {
-                $middleware = ContainerHelper::resolveCallable($middleware, $this->getContainer());
-                $kernel->addMiddleware($middleware);
-            } catch (Throwable) {
-            }
+            $kernel->addDeferredMiddleware(new $middleware($this->getContainer(), $this));
         }
     }
 
@@ -134,5 +132,6 @@ final class ServiceInitializer extends CoreSubmoduleAbstract
             return;
         }
         $this->core->getTranslator()?->setLanguage($language);
+        $this->core->getView()?->setParameter('language', $language);
     }
 }
