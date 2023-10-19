@@ -54,7 +54,6 @@ use Doctrine\ORM\Mapping\Driver\AttributeDriver;
 use function array_flip;
 use function array_map;
 use function class_exists;
-use function microtime;
 use function strtolower;
 use const DIRECTORY_SEPARATOR;
 use const PHP_INT_MIN;

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace ArrayAccess\TrayDigita\App\Modules\Core\Controllers\Api\User\Upload;
 
 use ArrayAccess\TrayDigita\App\Modules\Core\Controllers\Api\Abstracts\AbstractApiController;
+use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Api\Attributes\UserAPI;
 use ArrayAccess\TrayDigita\App\Modules\Media\Media;
 use ArrayAccess\TrayDigita\App\Modules\Users\Users;
 use ArrayAccess\TrayDigita\Exceptions\InvalidArgument\UnsupportedArgumentException;

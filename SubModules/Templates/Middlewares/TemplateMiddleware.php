@@ -11,7 +11,6 @@ use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use function is_string;
-use function var_dump;
 use const PHP_INT_MAX;
 
 class TemplateMiddleware extends AbstractMiddleware
