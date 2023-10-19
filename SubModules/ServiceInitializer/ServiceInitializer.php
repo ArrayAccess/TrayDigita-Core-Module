@@ -109,7 +109,18 @@ final class ServiceInitializer extends CoreSubmoduleAbstract
             return;
         }
         foreach ($this->middlewares as $middleware) {
-            $kernel->addDeferredMiddleware(new $middleware($this->getContainer(), $this));
+            try {
+                $kernel->addDeferredMiddleware(
+                    ContainerHelper::resolveCallable(
+                        $middleware,
+                        $this->getContainer(),
+                        ['serviceInitializer' => $this]
+                    )
+                );
+            } catch (Throwable $e) {
+                echo $e;
+                exit;
+            }
         }
     }
 

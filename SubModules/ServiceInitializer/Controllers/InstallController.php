@@ -3,15 +3,10 @@ declare(strict_types=1);
 
 namespace ArrayAccess\TrayDigita\App\Modules\Core\SubModules\ServiceInitializer\Controllers;
 
-use ArrayAccess\TrayDigita\Http\RequestResponseExceptions\NotFoundException;
 use ArrayAccess\TrayDigita\Routing\Attributes\Any;
 use ArrayAccess\TrayDigita\Routing\Attributes\Group;
-use ArrayAccess\TrayDigita\Util\Filter\MimeType;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use function filemtime;
-use function is_file;
-use function is_string;
 use const PHP_INT_MIN;
 
 // @todo add installation

@@ -51,7 +51,10 @@ use ArrayAccess\TrayDigita\Util\Filter\ContainerHelper;
 use ArrayAccess\TrayDigita\View\Interfaces\ViewInterface;
 use Doctrine\DBAL\Exception;
 use Doctrine\ORM\Mapping\Driver\AttributeDriver;
+use function array_flip;
+use function array_map;
 use function class_exists;
+use function microtime;
 use function strtolower;
 use const DIRECTORY_SEPARATOR;
 use const PHP_INT_MIN;
@@ -457,18 +460,20 @@ final class Core extends AbstractModule
         if ($this->entityChecking !== null) {
             return $this->entityChecking;
         }
-        $schema = $this->getConnection()->createSchemaManager();
+
         $em = $this->getConnection()->getEntityManager();
-        $schema = $schema->introspectSchema();
+        $tables = $this->getConnection()->createSchemaManager()->listTableNames();
+        $tables = array_flip(array_map('strtolower', $tables));
         $this->entityChecking = [];
         foreach (self::ENTITY_CHECKING as $type => $entities) {
             $this->entityChecking[$type] = [];
             foreach ($entities as $entity) {
-                $metadata = $em->getClassMetadata($entity);
-                $this->entityChecking[$type][$entity] = $schema->hasTable($metadata->getTableName());
-                $this->entityChecking['tables'][$entity] = $metadata->getTableName();
+                $table = $em->getClassMetadata($entity)->getTableName();
+                $this->entityChecking[$type][$entity] = isset($tables[strtolower($table)]);
+                $this->entityChecking['tables'][$entity] = $table;
             }
         }
+
         return $this->entityChecking;
     }
 }

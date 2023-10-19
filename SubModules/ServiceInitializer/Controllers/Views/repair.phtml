@@ -17,9 +17,10 @@ use ArrayAccess\TrayDigita\View\Engines\AbstractEngine;
 // phpcs:disable Generic.Files.LineLength.TooLong
 $core = ContainerHelper::service(Modules::class, $this->getView()->getContainer())
     ->get(Core::class);
+/** @noinspection PhpUnhandledExceptionInspection */
 $entities = $core->checkEntity();
 $tables = $entities['tables'];
-$requiredModules = array_keys(array_filter($entities['required'], static fn($e) => $e === false));
+$requiredTables = array_keys(array_filter($entities['required'], static fn($e) => $e === false));
 ?>
 <!DOCTYPE html>
 <html class="no-js" lang="<?= htmlspecialchars($parameters['language']??$core->getTranslator()?->getLanguage()??'en');?>">
@@ -41,9 +42,9 @@ $requiredModules = array_keys(array_filter($entities['required'], static fn($e) 
                 'core-module'
             );
         ?></h3>
-        <ul class="module-list">
-        <?php foreach ($requiredModules as $module) {?>
-            <li><?= basename(str_replace('\\', '/', $module));?></li>
+        <ul class="table-list">
+        <?php foreach ($requiredTables as $entity => $tableName) {?>
+            <li><?= basename(str_replace('\\', '/', $tables[$entity]));?></li>
         <?php } ?>
 
         </ul>

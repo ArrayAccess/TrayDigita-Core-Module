@@ -17,8 +17,9 @@ class ErrorMiddleware extends CoreErrorMiddleware
 
     public function __construct(
         ContainerInterface $container,
-        public readonly ServiceInitializer $serviceInitializer
+        public readonly ServiceInitializer $serviceInitializer,
+        ?bool $displayErrorDetails = null
     ) {
-        parent::__construct($container);
+        parent::__construct($container, $displayErrorDetails);
     }
 }
