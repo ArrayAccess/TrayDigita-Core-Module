@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ArrayAccess\TrayDigita\App\Modules\Core\Controllers\Api\Admin;
 
-use ArrayAccess\TrayDigita\App\Modules\Core\Controllers\Api\Abstracts\AbstractApiController;
+use ArrayAccess\TrayDigita\App\Modules\Core\Controllers\Abstracts\AbstractApiController;
 use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Api\Attributes\DashboardAPI;
 use ArrayAccess\TrayDigita\App\Modules\Users\Users;
 use ArrayAccess\TrayDigita\Kernel\Decorator;

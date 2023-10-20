@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace ArrayAccess\TrayDigita\App\Modules\Core\Controllers\Api\User;
 
-use ArrayAccess\TrayDigita\App\Modules\Core\Controllers\Api\Abstracts\AbstractApiController;
+use ArrayAccess\TrayDigita\App\Modules\Core\Controllers\Abstracts\AbstractApiController;
 use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Api\Attributes\UserAPI;
 use ArrayAccess\TrayDigita\App\Modules\Users\Users;
 use ArrayAccess\TrayDigita\Routing\Attributes\Abstracts\HttpMethodAttributeAbstract;

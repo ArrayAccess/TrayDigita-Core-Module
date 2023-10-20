@@ -1,36 +1,22 @@
 <?php
 declare(strict_types=1);
 
-namespace ArrayAccess\TrayDigita\App\Modules\Core\Controllers\Api\Abstracts;
+namespace ArrayAccess\TrayDigita\App\Modules\Core\Controllers\Abstracts;
 
-use ArrayAccess\TrayDigita\App\Modules\Users\Users;
 use ArrayAccess\TrayDigita\Collection\Config;
 use ArrayAccess\TrayDigita\Http\Code;
-use ArrayAccess\TrayDigita\Kernel\Decorator;
-use ArrayAccess\TrayDigita\Routing\AbstractController;
 use ArrayAccess\TrayDigita\Util\Filter\ContainerHelper;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use const JSON_PRETTY_PRINT;
 
-abstract class AbstractApiController extends AbstractController
+abstract class AbstractApiController extends AbstractAuthenticationBasedController
 {
-    const TYPE_USER = 'user';
-    const TYPE_ADMIN = 'admin';
-
-    protected ?string $authenticationMethod = null;
-
-    protected function getAuthenticationMethod() : ?string
-    {
-        return $this->authenticationMethod;
-    }
-
-    final public function beforeDispatch(
+    final public function doBeforeDispatch(
         ServerRequestInterface $request,
         string $method,
         ...$arguments
-    ) {
-
+    ): ?ResponseInterface {
         $this->statusCode = 404;
         // set result as json if return is not string
         $this->asJSON = true;
@@ -44,27 +30,23 @@ abstract class AbstractApiController extends AbstractController
                 static fn ($flags) => JSON_PRETTY_PRINT|$flags
             );
         }
-        $response = $this->doBeforeDispatch($request, $method, ...$arguments);
-        if ($response instanceof ResponseInterface) {
-            return $response;
-        }
         $method = $this->getAuthenticationMethod();
         if ($method === null) {
             return null;
         }
         $jsonResponder = $this->getJsonResponder();
-        $auth = Decorator::module(Users::class);
         $match = match ($method) {
-            self::TYPE_USER => $auth->isUserLoggedIn()
+            self::TYPE_USER => $this->user
                 ? null
                 : $jsonResponder->serve(Code::UNAUTHORIZED),
-            self::TYPE_ADMIN => $auth->isAdminLoggedIn()
+            self::TYPE_ADMIN => $this->admin
                 ? null
                 : $jsonResponder->serve(Code::UNAUTHORIZED),
-            default => $auth->isAdminLoggedIn() || $auth->isUserLoggedIn()
+            default => $this->admin || $this->user
                 ? null
                 : $jsonResponder->serve(Code::UNAUTHORIZED),
         };
+
         return $match ?? $this->doAfterBeforeDispatch(
             $request,
             $method,
@@ -76,17 +58,7 @@ abstract class AbstractApiController extends AbstractController
      * @param ServerRequestInterface $request
      * @param string $method
      * @param ...$arguments
-     * @return mixed
-     * @noinspection PhpReturnDocTypeMismatchInspection
-     * @noinspection PhpInconsistentReturnPointsInspection
      */
-    public function doBeforeDispatch(
-        ServerRequestInterface $request,
-        string $method,
-        ...$arguments
-    ) {
-    }
-
     public function doAfterBeforeDispatch(
         ServerRequestInterface $request,
         string $method,

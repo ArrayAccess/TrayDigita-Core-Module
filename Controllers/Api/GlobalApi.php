@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace ArrayAccess\TrayDigita\App\Modules\Core\Controllers\Api;
 
-use ArrayAccess\TrayDigita\App\Modules\Core\Controllers\Api\Abstracts\AbstractApiController;
+use ArrayAccess\TrayDigita\App\Modules\Core\Controllers\Abstracts\AbstractApiController;
 use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Api\Attributes\RouteAPI;
 use ArrayAccess\TrayDigita\Routing\Attributes\Any;
 use Psr\Http\Message\ResponseInterface;

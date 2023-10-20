@@ -8,7 +8,9 @@ use ArrayAccess\TrayDigita\Routing\Router;
 use ArrayAccess\TrayDigita\Util\Filter\DataNormalizer;
 use Attribute;
 use function in_array;
+use function str_starts_with;
 use function substr;
+use function var_dump;
 
 #[Attribute(Attribute::TARGET_CLASS)]
 class Dashboard extends Group
@@ -19,19 +21,37 @@ class Dashboard extends Group
     {
         $prefix = substr($pattern, 0, 1);
         // use static prefix
-        $prefixRoute = static::getPrefix();
+        $prefixRoute = static::prefix();
+        if (!str_starts_with($prefixRoute, '/')) {
+            $prefixRoute = "/$prefixRoute";
+        }
+
         // if contains delimiter
         if (in_array($prefix, Router::REGEX_DELIMITER)) {
-            $prefixRoute = "$prefix$prefixRoute";
+            $prefixRoute = "$prefix^$prefixRoute";
             $pattern = substr($pattern, 1);
+            $pattern = "(?:$pattern)";
         }
         $pattern = $prefixRoute . $pattern;
         parent::__construct($pattern);
     }
 
-    public static function getPrefix(): string
+    public static function prefix(): string
     {
-        return static::$prefix;
+        $prefix = static::$prefix;
+        return str_starts_with($prefix, '/')
+            ? $prefix
+            : "/$prefix";
+    }
+
+    public static function path(string $path = ''): string
+    {
+        $prefix = static::prefix();
+        if ($path && !str_starts_with($path, '/')) {
+            $path = "/$path";
+        }
+
+        return $prefix . $path;
     }
 
     public static function setPrefix(string $prefix): void

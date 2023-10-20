@@ -10,6 +10,7 @@ use Attribute;
 use Psr\Http\Message\UriInterface;
 use function in_array;
 use function sprintf;
+use function str_starts_with;
 use function substr;
 
 #[Attribute(Attribute::TARGET_CLASS)]
@@ -30,8 +31,9 @@ class RouteAPI extends Group
         $prefixRoute = static::prefix();
         // if contains delimiter
         if (in_array($prefix, Router::REGEX_DELIMITER)) {
-            $prefixRoute = "$prefix$prefixRoute";
+            $prefixRoute = "$prefix^$prefixRoute";
             $pattern = substr($pattern, 1);
+            $pattern = "(?:$pattern)";
         }
         $pattern = $prefixRoute . $pattern;
         parent::__construct($pattern);
