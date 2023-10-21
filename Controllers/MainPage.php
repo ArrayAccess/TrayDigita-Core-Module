@@ -16,10 +16,15 @@ use function base64_decode;
 class MainPage extends AbstractController
 {
     #[Any('')]
-    public function main() : ResponseInterface
-    {
+    public function main(
+        ResponseInterface $response
+    ) : ResponseInterface {
         return $this
-            ->render('templates/home');
+            ->render(
+                'templates/home',
+                [],
+                $response
+            );
     }
 
     // handle favicon

@@ -86,6 +86,7 @@ final class Templates extends CoreSubmoduleAbstract
                 $view->getContainer()??$this->getContainer()
             )
         );
+
         return $module;
     }
 }

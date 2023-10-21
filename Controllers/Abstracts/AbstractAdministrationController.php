@@ -6,7 +6,6 @@ namespace ArrayAccess\TrayDigita\App\Modules\Core\Controllers\Abstracts;
 use ArrayAccess\TrayDigita\Traits\Service\TranslatorTrait;
 use ArrayAccess\TrayDigita\Util\Filter\DataNormalizer;
 use Psr\Http\Message\ServerRequestInterface;
-use function var_dump;
 
 abstract class AbstractAdministrationController extends AbstractAuthenticationBasedController
 {

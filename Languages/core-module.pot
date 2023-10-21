@@ -2,7 +2,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: TrayDigita Core Module 1.0.0\n"
-"POT-Creation-Date: 2023-10-19 03:54+0700\n"
+"POT-Creation-Date: 2023-10-22 02:40+0700\n"
 "PO-Revision-Date: 2023-09-24 19:00+0700\n"
 "Last-Translator: ArrayAccess\n"
 "Language-Team: ArrayAccess\n"
@@ -33,12 +33,16 @@ msgctxt "benchmark"
 msgid "Event"
 msgstr ""
 
-#: Core.php:115
+#: Controllers/User/Auth.php:31
+msgid "Login to member area"
+msgstr ""
+
+#: Core.php:184
 msgctxt "module-info"
 msgid "Core"
 msgstr ""
 
-#: Core.php:132
+#: Core.php:201
 msgctxt "module-info"
 msgid "Main core module"
 msgstr ""
@@ -148,12 +152,12 @@ msgid ""
 "record for scheduler"
 msgstr ""
 
-#: SubModules/ServiceInitializer/ServiceInitializer.php:37
+#: SubModules/ServiceInitializer/ServiceInitializer.php:39
 msgctxt "module-info"
 msgid "Service Initializer"
 msgstr ""
 
-#: SubModules/ServiceInitializer/ServiceInitializer.php:46
+#: SubModules/ServiceInitializer/ServiceInitializer.php:48
 msgctxt "module-info"
 msgid "Core module to make application run properly"
 msgstr ""
@@ -168,12 +172,12 @@ msgctxt "module-info"
 msgid "Core module for site"
 msgstr ""
 
-#: SubModules/Templates/Templates.php:27
+#: SubModules/Templates/Templates.php:26
 msgctxt "module-info"
 msgid "Templates Helper"
 msgstr ""
 
-#: SubModules/Templates/Templates.php:36
+#: SubModules/Templates/Templates.php:35
 msgctxt "module-info"
 msgid "Core module to support templating"
 msgstr ""
@@ -188,6 +192,7 @@ msgctxt "module-info"
 msgid "Core module to support translation"
 msgstr ""
 
+#: SubModules/ServiceInitializer/Controllers/Views/contents/config-install.phtml:22
 #: SubModules/ServiceInitializer/Controllers/Views/contents/config-unavailable.phtml:22
 #: SubModules/ServiceInitializer/Controllers/Views/install.phtml:30
 msgctxt "installation"
@@ -205,3 +210,13 @@ msgid "Required Module Not Found"
 msgid_plural "Required Modules Not Found"
 msgstr[0] ""
 msgstr[1] ""
+
+#: SubModules/ServiceInitializer/Controllers/Views/repair.phtml:31
+msgctxt "module-not-found"
+msgid "Incomplete Database Schema"
+msgstr ""
+
+#: SubModules/ServiceInitializer/Controllers/Views/repair.phtml:40
+msgctxt "incomplete-schema"
+msgid "Database schema are incomplete"
+msgstr ""

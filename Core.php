@@ -239,10 +239,10 @@ final class Core extends AbstractModule
             }
             $factoryControllerNamespace = $core->getKernel()->getControllerNameSpace();
             $controllerNamespace = __NAMESPACE__ .'\\Controller\\';
-            $controllerDir = __DIR__ . DIRECTORY_SEPARATOR . 'Controllers';
-            Consolidation::registerAutoloader($controllerNamespace, $controllerDir);
+            $controllerDirectory = __DIR__ . DIRECTORY_SEPARATOR . 'Controllers';
+            Consolidation::registerAutoloader($controllerNamespace, $controllerDirectory);
             $this->{'controllerNameSpace'} = $controllerNamespace;
-            $this->{'registeredDirectories'}[$controllerNamespace] = $controllerDir;
+            $this->{'registeredDirectories'}[$controllerNamespace] = $controllerDirectory;
         })->call($kernel, $this);
         if (!$factoryControllerNamespace) {
             return;

@@ -36,7 +36,6 @@ class TemplateMiddleware extends AbstractMiddleware
         if (is_string($active)) {
             $this->templates->getTemplateRule()->setActive($active);
         }
-
         $template = $this->templates->getTemplateRule()->getActive();
         if ($template) {
             if ($template->getBasePath() !== $active && $option) {

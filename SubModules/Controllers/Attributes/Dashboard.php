@@ -10,7 +10,6 @@ use Attribute;
 use function in_array;
 use function str_starts_with;
 use function substr;
-use function var_dump;
 
 #[Attribute(Attribute::TARGET_CLASS)]
 class Dashboard extends Group

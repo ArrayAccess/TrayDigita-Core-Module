@@ -22,9 +22,7 @@ class Auth extends AbstractUserController
         priority: PHP_INT_MIN
     )]
     public function login(
-        ServerRequestInterface $request,
-        ResponseInterface $response,
-        array $params
+        ResponseInterface $response
     ): ResponseInterface {
         return $this->render(
             'user/login',
@@ -36,6 +34,5 @@ class Auth extends AbstractUserController
             ],
             $response
         );
-        // return new \ArrayAccess\TrayDigita\Responder\FileResponder\FileResponder(__FILE__);
     }
 }

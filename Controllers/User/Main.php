@@ -18,7 +18,6 @@ class Main extends AbstractUserController
         priority: PHP_INT_MAX - 1000
     )]
     public function dashboard(
-        ServerRequestInterface $request,
         ResponseInterface $response
     ) : ResponseInterface {
         return $this->render(
