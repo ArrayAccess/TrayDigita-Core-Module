@@ -85,7 +85,7 @@ final class Core extends AbstractModule
     /**
      * @var class-string<CoreSubmoduleAbstract>
      */
-    const MODULES = [
+    final const MODULES = [
         Announcement::class,
         Api::class,
         Assets::class,
@@ -101,7 +101,7 @@ final class Core extends AbstractModule
         Translator::class,
     ];
 
-    const ENTITY_CHECKING = [
+    final const ENTITY_CHECKING = [
         'required' => [
             Entities\Option::class,
             Entities\Post::class,
