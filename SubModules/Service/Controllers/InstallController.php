@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace ArrayAccess\TrayDigita\App\Modules\Core\SubModules\ServiceInitializer\Controllers;
+namespace ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Service\Controllers;
 
 use ArrayAccess\TrayDigita\Routing\Attributes\Any;
 use ArrayAccess\TrayDigita\Routing\Attributes\Group;

@@ -12,7 +12,7 @@ use ArrayAccess\TrayDigita\Util\Filter\ContainerHelper;
 
 final class Templates extends CoreSubmoduleAbstract
 {
-    const ACTIVE_TEMPLATE_KEY = 'active_template';
+    public const ACTIVE_TEMPLATE_KEY = 'active_template';
 
     protected int $priority = 0;
 

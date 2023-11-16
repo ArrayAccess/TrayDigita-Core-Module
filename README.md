@@ -8,17 +8,12 @@ Directory name of core module is : `Core`
 
 > Sub Modules
 
-- [Announcement](SubModules/Announcement)
 - [Api](SubModules/Api)
 - [Assets](SubModules/Assets)
-- [Controllers](SubModules/Controllers)
-- [EducationalInstitution](SubModules/EducationalInstitution)
-- [Library](SubModules/Library)
 - [Option](SubModules/Option)
 - [Posts](SubModules/Posts)
-- [Quiz](SubModules/Quiz)
 - [Scheduler](SubModules/Scheduler)
-- [ServiceInitializer](SubModules/ServiceInitializer)
+- [ServiceInitializer](SubModules/Service)
 - [Sites](SubModules/Sites)
 - [Templates](SubModules/Templates)
 - [Translator](SubModules/Translator)

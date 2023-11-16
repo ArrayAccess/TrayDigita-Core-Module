@@ -5,8 +5,10 @@ namespace ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Templates\Middlewar
 
 use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Option\Option;
 use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Templates\Templates;
+use ArrayAccess\TrayDigita\App\Modules\Users\Users;
 use ArrayAccess\TrayDigita\Middleware\AbstractMiddleware;
 use ArrayAccess\TrayDigita\Templates\Middlewares\TemplateLoaderMiddleware;
+use ArrayAccess\TrayDigita\Util\Filter\Consolidation;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -20,7 +22,7 @@ class TemplateMiddleware extends AbstractMiddleware
      * @var int
      * @see TemplateLoaderMiddleware::$priority
      */
-    protected int $priority = PHP_INT_MAX - 9999;
+    protected int $priority = PHP_INT_MAX - 99999;
 
     public function __construct(
         ContainerInterface $container,
@@ -31,7 +33,10 @@ class TemplateMiddleware extends AbstractMiddleware
 
     protected function doProcess(ServerRequestInterface $request): ServerRequestInterface|ResponseInterface
     {
-        $option = $this->templates->getModule(Option::class);
+        if (Consolidation::isCli()) {
+            return $request;
+        }
+        $option = $this->templates->getModule(Users::class)->getOption();
         $active = $option?->get(Templates::ACTIVE_TEMPLATE_KEY)?->getValue();
         if (is_string($active)) {
             $this->templates->getTemplateRule()->setActive($active);

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace ArrayAccess\TrayDigita\App\Modules\Core\SubModules\ServiceInitializer\Controllers;
+namespace ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Service\Controllers;
 
 use ArrayAccess\TrayDigita\Http\Code;
 use ArrayAccess\TrayDigita\Routing\Attributes\Any;
@@ -11,7 +11,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use const PHP_INT_MIN;
 
 #[Group('')]
-class RequireModuleController extends AbstractServiceController
+class RepairNeeded extends AbstractServiceController
 {
     #[Any(
         pattern: '/assets@core/(js|css|png|svg)/([^/]+\.\1)',
@@ -38,7 +38,7 @@ class RequireModuleController extends AbstractServiceController
         ResponseInterface $response
     ) : ResponseInterface {
         return $this->render(
-            'modules',
+            'repair',
             [
                 'request' => $request
             ],

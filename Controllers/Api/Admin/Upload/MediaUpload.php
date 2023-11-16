@@ -3,14 +3,15 @@ declare(strict_types=1);
 
 namespace ArrayAccess\TrayDigita\App\Modules\Core\Controllers\Api\Admin\Upload;
 
-use ArrayAccess\TrayDigita\App\Modules\Core\Controllers\Abstracts\AbstractApiController;
-use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Api\Attributes\DashboardAPI;
 use ArrayAccess\TrayDigita\App\Modules\Media\Media;
+use ArrayAccess\TrayDigita\App\Modules\Users\Route\Attributes\DashboardAPI;
+use ArrayAccess\TrayDigita\App\Modules\Users\Route\Controllers\AbstractApiController;
 use ArrayAccess\TrayDigita\App\Modules\Users\Users;
 use ArrayAccess\TrayDigita\Exceptions\InvalidArgument\UnsupportedArgumentException;
 use ArrayAccess\TrayDigita\Exceptions\Logical\OutOfRangeException;
 use ArrayAccess\TrayDigita\Exceptions\Runtime\RuntimeException;
 use ArrayAccess\TrayDigita\Http\Code;
+use ArrayAccess\TrayDigita\Http\RequestResponseExceptions\NotFoundException;
 use ArrayAccess\TrayDigita\Routing\Attributes\Any;
 use ArrayAccess\TrayDigita\Traits\Service\TranslatorTrait;
 use ArrayAccess\TrayDigita\Uploader\Exceptions\ContentRangeIsNotFulFilledException;
@@ -72,6 +73,9 @@ class MediaUpload extends AbstractApiController
         // @todo remove user
         $users = $this->getModule(Users::class);
         $user = $users->getAdminById(1);
+        if (!$user) {
+            throw new NotFoundException($request);
+        }
         try {
             $metaData = $uploader->uploadPublic(
                 $request,

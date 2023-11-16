@@ -25,8 +25,8 @@ final class Assets extends CoreSubmoduleAbstract
     {
         return $this->translateContext(
             'Assets Helper',
-            'module-info',
-            'core-module'
+            'core-module/assets',
+            'module'
         );
     }
 
@@ -34,8 +34,8 @@ final class Assets extends CoreSubmoduleAbstract
     {
         return $this->translateContext(
             'Core module that help assets rendering',
-            'module-info',
-            'core-module'
+            'core-module/assets',
+            'module'
         );
     }
 
@@ -159,7 +159,7 @@ final class Assets extends CoreSubmoduleAbstract
         return $args;
     }
 
-    final const CSS = [
+    final public const CSS = [
         // https://grapesjs.com/
         "grapesjs" => [
             'url'  => 'https://cdnjs.cloudflare.com/ajax/libs/grapesjs/0.12.17/css/grapes.min.css',
@@ -197,7 +197,7 @@ final class Assets extends CoreSubmoduleAbstract
         ],
     ];
 
-    final const JS = [
+    final public const JS = [
         // http://jquery.com/
         'jquery' => [
             'url' => 'https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js',
@@ -236,7 +236,7 @@ final class Assets extends CoreSubmoduleAbstract
         ],
     ];
 
-    final const PACKAGE = [
+    final public const PACKAGE = [
         'grapesjs' => [
             'css' => [
                 'grapesjs' => []

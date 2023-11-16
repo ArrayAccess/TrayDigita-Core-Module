@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace ArrayAccess\TrayDigita\App\Modules\Core\SubModules\ServiceInitializer\Middlewares;
+namespace ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Service\Middlewares;
 
 use ArrayAccess\TrayDigita\App\Modules\Core\Core;
-use ArrayAccess\TrayDigita\App\Modules\Core\Entities\Option as OptionEntity;
 use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Option\Option;
-use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\ServiceInitializer\Controllers\InstallController;
-use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\ServiceInitializer\Controllers\RequireModuleController;
-use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\ServiceInitializer\ServiceInitializer;
+use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Service\Controllers\InstallController;
+use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Service\Controllers\RequireModuleController;
+use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Service\Service;
+use ArrayAccess\TrayDigita\App\Modules\Users\Users;
 use ArrayAccess\TrayDigita\Http\Interfaces\HttpExceptionInterface;
 use ArrayAccess\TrayDigita\Http\SetCookie;
 use ArrayAccess\TrayDigita\L10n\Languages\Locale;
@@ -32,7 +32,7 @@ class InitMiddleware extends AbstractMiddleware
 
     public function __construct(
         ContainerInterface $container,
-        public readonly ServiceInitializer $serviceInitializer
+        public readonly Service $serviceInitializer
     ) {
         parent::__construct($container);
     }
@@ -46,29 +46,43 @@ class InitMiddleware extends AbstractMiddleware
             return $request;
         }
 
+        $events = [
+            'kernel.controllerLoader',
+            'kernel.databaseEventLoader',
+            'kernel.commandLoader',
+        ];
+        $manager = $this->getManager();
         // REGISTER CONTROLLER IF CONFIG ERRORS
         $router = $this->serviceInitializer->getKernel()->getHttpKernel()->getRouter();
         foreach ($this->serviceInitializer->core->getRequiredModules() as $module) {
             if (!$this->serviceInitializer->core->getModules()->has($module)) {
+                foreach ($events as $event) {
+                    $manager->attach($event, static fn() => false);
+                }
                 $router->addRouteController(RequireModuleController::class);
                 return $this->doHandle($router, $request);
             }
         }
 
         if ($this->serviceInitializer->core->getKernel()->getConfigError()) {
+            foreach ($events as $event) {
+                $manager->attach($event, static fn() => false);
+            }
             $router->addRouteController(InstallController::class);
             return $this->doHandle($router, $request);
         }
+
         $countRequired = count(Core::ENTITY_CHECKING['required']);
         $entities = array_filter(
             $this->serviceInitializer->core->checkEntity()['required'],
             static fn ($e) => $e === false
         );
+
         if ($countRequired === count($entities)) {
             $router->addRouteController(InstallController::class);
             return $this->doHandle($router, $request);
         }
-        $option = $this->serviceInitializer->getModule(Option::class);
+        $option = $this->serviceInitializer->getModule(Users::class)->getOption();
         $translator = $this
             ->serviceInitializer
             ->core
@@ -76,13 +90,11 @@ class InitMiddleware extends AbstractMiddleware
                 TranslatorInterface::class,
                 $this->getContainer()
             );
-        $optionLanguage = $option?->get('language');
-        $language       = $optionLanguage?->getValue();
-        $language = $option && $language ? Locale::normalizeLocale($language) : null;
+        $optionLanguage = $option->get('language');
+        $language  = $optionLanguage?->getValue();
+        $language = is_string($language) ? Locale::normalizeLocale($language) : null;
         if (!$language) {
-            $optionLanguage ??= $option
-                ?->createNewOptionEntityObject('language')
-                ??new OptionEntity();
+            $optionLanguage ??= $option->getOrCreate('language');
             $language = $translator?->getLanguage()??$this
                 ->serviceInitializer
                 ->core
@@ -97,7 +109,7 @@ class InitMiddleware extends AbstractMiddleware
         }
 
         // set user language
-        $originSelectedLanguage = $request->getCookieParams()[ServiceInitializer::LANGUAGE_COOKIE]??null;
+        $originSelectedLanguage = $request->getCookieParams()[Service::LANGUAGE_COOKIE]??null;
         $selectedLanguage = $language;
         if ($originSelectedLanguage) {
             $selectedLanguage = Locale::normalizeLocale($originSelectedLanguage)??$language;
@@ -112,7 +124,7 @@ class InitMiddleware extends AbstractMiddleware
                     return $response->withAddedHeader(
                         'Set-Cookie',
                         (string) new SetCookie(
-                            ServiceInitializer::LANGUAGE_COOKIE,
+                            Service::LANGUAGE_COOKIE,
                             $language,
                             path: '/'
                         )

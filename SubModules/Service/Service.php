@@ -1,15 +1,15 @@
 <?php
 declare(strict_types=1);
 
-namespace ArrayAccess\TrayDigita\App\Modules\Core\SubModules\ServiceInitializer;
+namespace ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Service;
 
 use ArrayAccess\TrayDigita\App\Modules\Core\Abstracts\CoreSubmoduleAbstract;
-use ArrayAccess\TrayDigita\App\Modules\Core\Entities\CacheItem;
-use ArrayAccess\TrayDigita\App\Modules\Core\Entities\LogItem;
-use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\ServiceInitializer\Middlewares\ErrorMiddleware;
-use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\ServiceInitializer\Middlewares\InitMiddleware;
+use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Service\Middlewares\ErrorMiddleware;
+use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Service\Middlewares\InitMiddleware;
+use ArrayAccess\TrayDigita\Cache\Entities\CacheItem;
 use ArrayAccess\TrayDigita\Collection\Config;
 use ArrayAccess\TrayDigita\L10n\Languages\Locale;
+use ArrayAccess\TrayDigita\Logger\Entities\LogItem;
 use ArrayAccess\TrayDigita\Util\Filter\Consolidation;
 use ArrayAccess\TrayDigita\Util\Filter\ContainerHelper;
 use Psr\Http\Server\MiddlewareInterface;
@@ -17,13 +17,13 @@ use Throwable;
 use function is_array;
 use function is_string;
 
-final class ServiceInitializer extends CoreSubmoduleAbstract
+final class Service extends CoreSubmoduleAbstract
 {
     protected int $priority = 9999;
 
     protected string $name = 'Service Initializer';
 
-    const LANGUAGE_COOKIE = 'language';
+    public const LANGUAGE_COOKIE = 'language';
 
     /**
      * @var array<class-string<MiddlewareInterface>>
@@ -37,17 +37,17 @@ final class ServiceInitializer extends CoreSubmoduleAbstract
     {
         return $this->translateContext(
             'Service Initializer',
-            'module-info',
-            'core-module'
+            'core-module/service',
+            'module'
         );
     }
 
     public function getDescription(): string
     {
         return $this->translateContext(
-            'Core module to make application run properly',
-            'module-info',
-            'core-module'
+            'Core module to make application service run properly',
+            'core-module/service',
+            'module'
         );
     }
 

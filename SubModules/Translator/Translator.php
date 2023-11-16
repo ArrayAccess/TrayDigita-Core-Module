@@ -34,24 +34,15 @@ class Translator extends CoreSubmoduleAbstract
      * Register translation directory
      *
      * @param string $textDomain
-     * @param string|array $directory
+     * @param string ...$directory
      * @return bool
      */
-    public function registerDomain(string $textDomain, string|array $directory): bool
+    public function registerDomain(string $textDomain, string ...$directory): bool
     {
         // filter
         if (trim($textDomain) === '') {
             return false;
         }
-        $succeed = false;
-        foreach ($this->getTranslator()->getAdapters() as $adapter) {
-            if ($adapter instanceof AdapterBasedFileInterface) {
-                $res = $adapter->registerDirectory($directory, $textDomain, true);
-                if ($res) {
-                    $succeed = true;
-                }
-            }
-        }
-        return $succeed;
+        return $this->getTranslator()?->registerDirectory($textDomain, ...$directory);
     }
 }

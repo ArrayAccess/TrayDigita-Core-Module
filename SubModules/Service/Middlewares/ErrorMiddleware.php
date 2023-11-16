@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace ArrayAccess\TrayDigita\App\Modules\Core\SubModules\ServiceInitializer\Middlewares;
+namespace ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Service\Middlewares;
 
-use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\ServiceInitializer\ServiceInitializer;
+use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Service\Service;
 use ArrayAccess\TrayDigita\Middleware\ErrorMiddleware as CoreErrorMiddleware;
 use Psr\Container\ContainerInterface;
 use const PHP_INT_MAX;
@@ -17,7 +17,7 @@ class ErrorMiddleware extends CoreErrorMiddleware
 
     public function __construct(
         ContainerInterface $container,
-        public readonly ServiceInitializer $serviceInitializer,
+        public readonly Service $serviceInitializer,
         ?bool $displayErrorDetails = null
     ) {
         parent::__construct($container, $displayErrorDetails);

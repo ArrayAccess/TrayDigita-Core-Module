@@ -1,15 +1,14 @@
 <?php
-/** @noinspection PhpUnused */
 declare(strict_types=1);
 
 namespace ArrayAccess\TrayDigita\App\Modules\Core\Controllers;
 
-use ArrayAccess\TrayDigita\App\Modules\Core\Entities\Post;
-use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Posts\Posts;
-use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Posts\PostTypes\Abstracts\ArchiveBasedPostAbstract;
-use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Posts\PostTypes\Abstracts\SinglePostAbstract;
-use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Posts\PostTypes\Archive\TypeArchive;
-use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Posts\PostTypes\Singular\SingularFinder;
+use ArrayAccess\TrayDigita\App\Modules\Posts\Entities\Post;
+use ArrayAccess\TrayDigita\App\Modules\Posts\Posts;
+use ArrayAccess\TrayDigita\App\Modules\Posts\PostTypes\Abstracts\ArchiveBasedPostAbstract;
+use ArrayAccess\TrayDigita\App\Modules\Posts\PostTypes\Abstracts\SinglePostAbstract;
+use ArrayAccess\TrayDigita\App\Modules\Posts\PostTypes\Archive\TypeArchive;
+use ArrayAccess\TrayDigita\App\Modules\Posts\PostTypes\Singular\SingularFinder;
 use ArrayAccess\TrayDigita\App\Modules\Users\Users;
 use ArrayAccess\TrayDigita\Database\Entities\Interfaces\AvailabilityStatusEntityInterface;
 use ArrayAccess\TrayDigita\Http\RequestResponseExceptions\NotFoundException;
