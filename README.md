@@ -8,13 +8,9 @@ Directory name of core module is : `Core`
 
 > Sub Modules
 
-- [Api](SubModules/Api)
 - [Assets](SubModules/Assets)
-- [Option](SubModules/Option)
-- [Posts](SubModules/Posts)
 - [Scheduler](SubModules/Scheduler)
 - [ServiceInitializer](SubModules/Service)
-- [Sites](SubModules/Sites)
 - [Templates](SubModules/Templates)
 - [Translator](SubModules/Translator)
 
@@ -26,3 +22,4 @@ See the [Entities Directory](Entities)
 
 - Users Module [https://github.com/ArrayAccess/TrayDigita-Users-Module](https://github.com/ArrayAccess/TrayDigita-Users-Module)
 - Media Module [https://github.com/ArrayAccess/TrayDigita-Media-Module](https://github.com/ArrayAccess/TrayDigita-Media-Module)
+- Posts Module [https://github.com/ArrayAccess/TrayDigita-Posts-Module](https://github.com/ArrayAccess/TrayDigita-Posts-Module)
