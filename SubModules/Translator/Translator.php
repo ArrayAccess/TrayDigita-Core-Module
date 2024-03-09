@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Translator;
 
 use ArrayAccess\TrayDigita\App\Modules\Core\Abstracts\CoreSubmoduleAbstract;
-use ArrayAccess\TrayDigita\L10n\Translations\Interfaces\AdapterBasedFileInterface;
 use function trim;
 
 class Translator extends CoreSubmoduleAbstract
