@@ -2,7 +2,7 @@
 
 Core modules for [Tray Digita](https://github.com/ArrayAccess/TrayDigita).
 
-This module contains [Sub Modules](SubModules) & [Entities](Entities)
+This module contains [Sub Modules](SubModules)
 
 Directory name of core module is : `Core`
 
@@ -13,10 +13,6 @@ Directory name of core module is : `Core`
 - [ServiceInitializer](SubModules/Service)
 - [Templates](SubModules/Templates)
 - [Translator](SubModules/Translator)
-
-> Entities
-
-See the [Entities Directory](Entities)
 
 > Require
 
