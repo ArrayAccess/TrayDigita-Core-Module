@@ -1,4 +1,5 @@
 <?php
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
 declare(strict_types=1);
 
 namespace ArrayAccess\TrayDigita\App\Modules\Core;
@@ -32,18 +33,14 @@ use ArrayAccess\TrayDigita\Benchmark\Aggregator\EventAggregator;
 use ArrayAccess\TrayDigita\Benchmark\Injector\ManagerProfiler;
 use ArrayAccess\TrayDigita\Database\Connection;
 use ArrayAccess\TrayDigita\Module\AbstractModule;
-use ArrayAccess\TrayDigita\Module\Interfaces\ModuleInterface;
 use ArrayAccess\TrayDigita\Traits\Database\ConnectionTrait;
 use ArrayAccess\TrayDigita\Traits\Service\TranslatorTrait;
 use ArrayAccess\TrayDigita\Traits\View\ViewTrait;
 use ArrayAccess\TrayDigita\Util\Filter\Consolidation;
-use Doctrine\DBAL\Exception;
 use function array_flip;
 use function array_map;
 use function class_exists;
-use function dirname;
 use function strtolower;
-use function var_dump;
 use const PHP_INT_MIN;
 
 final class Core extends AbstractModule
@@ -123,7 +120,7 @@ final class Core extends AbstractModule
     private ?Connection $connection = null;
 
     /**
-     * @var array<class-string<ModuleInterface>
+     * @var array<class-string<\ArrayAccess\TrayDigita\Module\Interfaces\ModuleInterface>
      */
     private array $requiredModules = [
         Users::class,
@@ -140,7 +137,7 @@ final class Core extends AbstractModule
     }
 
     /**
-     * @return array<class-string<ModuleInterface>
+     * @return array<class-string<\ArrayAccess\TrayDigita\Module\Interfaces\ModuleInterface>
      */
     public function getRequiredModules(): array
     {
@@ -158,6 +155,7 @@ final class Core extends AbstractModule
 
     protected function doInit(): void
     {
+        /** @noinspection DuplicatedCode */
         if ($this->didInit) {
             return;
         }
@@ -311,13 +309,13 @@ final class Core extends AbstractModule
     private ?array $entityChecking = null;
 
     /**
-     * @throws Exception
      * @return array{
      *     required: array<string, bool>,
      *     optionsl: array<string, bool>,
      *     additional: array<string, bool>,
      *     tables: array<string, string>,
      * }
+     * @throws \Doctrine\DBAL\Exception
      */
     public function checkEntity(): array
     {
