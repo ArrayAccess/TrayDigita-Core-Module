@@ -15,6 +15,7 @@ use ArrayAccess\TrayDigita\App\Modules\Core\SubModules\Translator\Translator;
 use ArrayAccess\TrayDigita\App\Modules\Media\Entities\Attachment;
 use ArrayAccess\TrayDigita\App\Modules\Media\Entities\UserAttachment;
 use ArrayAccess\TrayDigita\App\Modules\Media\Media;
+use ArrayAccess\TrayDigita\App\Modules\Posts\Posts;
 use ArrayAccess\TrayDigita\App\Modules\Users\Entities\Admin;
 use ArrayAccess\TrayDigita\App\Modules\Users\Entities\AdminLog;
 use ArrayAccess\TrayDigita\App\Modules\Users\Entities\AdminMeta;
@@ -125,6 +126,7 @@ final class Core extends AbstractModule
     private array $requiredModules = [
         Users::class,
         Media::class,
+        Posts::class
     ];
 
     public function getName(): string
@@ -161,8 +163,6 @@ final class Core extends AbstractModule
         }
         Consolidation::registerAutoloader(__NAMESPACE__, __DIR__);
         $this->didInit = true;
-        $kernel = $this->getKernel();
-        $kernel->registerControllerDirectory(__DIR__ .'/Controllers');
         $this->getTranslator()?->registerDirectory('module', __DIR__ . '/Languages');
         $this->getConnection()->registerEntityDirectory(__DIR__ . '/Entities');
 

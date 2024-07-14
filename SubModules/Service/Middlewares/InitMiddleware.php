@@ -137,6 +137,9 @@ class InitMiddleware extends AbstractMiddleware
         $view = $this->serviceInitializer->core->getView();
         $view->setRequest($request);
         $view->setParameter('language', $selectedLanguage);
+
+        // add controller
+        $this->serviceInitializer->getKernel()->registerControllerDirectory(__DIR__ .'/../Controllers');
         return $request;
     }
 
