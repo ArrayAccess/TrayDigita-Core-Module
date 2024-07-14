@@ -163,6 +163,8 @@ final class Core extends AbstractModule
         }
         Consolidation::registerAutoloader(__NAMESPACE__, __DIR__);
         $this->didInit = true;
+        $kernel = $this->getKernel();
+        $kernel->registerControllerDirectory(__DIR__ .'/Controllers');
         $this->getTranslator()?->registerDirectory('module', __DIR__ . '/Languages');
         $this->getConnection()->registerEntityDirectory(__DIR__ . '/Entities');
 
